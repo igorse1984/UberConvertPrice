@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">UberConvertPrice</string>
+    <string name="time">Время</string>
+    <string name="way">Расстояние</string>
+    <string name="calculate">Посчитать</string>
+    <string name="descPrice">Стоимость поездок по тарифам:</string>
+    <string name="descNewPrice">3/15</string>
+    <string name="descOldPrice">7/7</string>
+</resources>

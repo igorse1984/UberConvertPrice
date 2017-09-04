@@ -14,14 +14,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:hint="@string/time" />
+            android:hint="@string/time"
+            android:maxLines="1" />
 
         <EditText
             android:id="@+id/editTextWay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:hint="@string/way" />
+            android:hint="@string/way"
+            android:maxLines="1" />
 
 
     </LinearLayout>

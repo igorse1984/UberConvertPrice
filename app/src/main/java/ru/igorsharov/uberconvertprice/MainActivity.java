@@ -1,7 +1,7 @@
 package ru.igorsharov.uberconvertprice;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -10,53 +10,21 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText etTime, etWay;
     private TextView tvResultOfNewPrice, tvResultOfOldPrice;
     private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
     private Spinner boostSpinner;
-    private BoxData oldPriceBox, newPriceBox;
-    private CheckBox chbPrigorod, chbBeznal, chbWaiting, chbGarantpik;
-    private float time, way, boost;
+    private DataBox oldPriceBox, newPriceBox;
+    private HashMap<String, CheckBox> chBox;
+    private final String PRIGOROD = "Prigorod";
+    private final String BEZNAL = "Beznal";
+    private final String WAITING = "Waiting";
+    private final String GARANTPIK = "Garantpik";
 
-    private class BoxData {
-        private int priceTime, priceWay, priceWayOver25, minPrice;
-        private float uberCommission, pathnerCommission;
-
-        BoxData(int priceTime, int priceWay, int priceWayOver25, int minPrice) {
-            this.priceTime = priceTime;
-            this.priceWayOver25 = priceWayOver25;
-            this.priceWay = priceWay;
-            this.minPrice = minPrice;
-        }
-
-        int getPriceTime() {
-            return priceTime;
-        }
-
-        int getpriceWayOver25() {
-            return priceWayOver25;
-        }
-
-        int getPriceWay() {
-            return priceWay;
-        }
-
-        int getMinPrice() {
-            return minPrice;
-        }
-    }
-
-    private class CalculatePrice {
-
-
-        //(((((time * bd.getPriceTime() + way * bd.getPriceWay())) + bd.getMinPrice()) * boost)) * uberCommission;
-
-        private float core() {
-            return (time * bd.getPriceTime() + way * bd.getPriceWay())) + bd.getMinPrice());
-        }
-    }
 
     private void initView() {
         findViewById(R.id.buttonCalc).setOnClickListener(this);
@@ -68,10 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvResultOfNewPrice1 = (TextView) findViewById(R.id.textViewNewPrice1);
         tvResultOfOldPrice1 = (TextView) findViewById(R.id.textViewOldPrice1);
         boostSpinner = (Spinner) findViewById(R.id.boostSpinner);
-        chbPrigorod = (CheckBox) findViewById(R.id.chbPrigorod);
-        chbBeznal = (CheckBox) findViewById(R.id.chbBeznal);
-        chbWaiting = (CheckBox) findViewById(R.id.chbWaiting);
-        chbGarantpik = (CheckBox) findViewById(R.id.chbGarantpik);
+        chBox.put(PRIGOROD, (CheckBox) findViewById(R.id.chbPrigorod));
+        chBox.put(BEZNAL, (CheckBox) findViewById(R.id.chbBeznal));
+        chBox.put(WAITING, (CheckBox) findViewById(R.id.chbWaiting));
+        chBox.put(GARANTPIK, (CheckBox) findViewById(R.id.chbGarantpik));
     }
 
     @Override
@@ -79,15 +47,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        etWayHandler();
-        oldPriceBox = new BoxData(7, 7, 7, 50);
-        newPriceBox = new BoxData(3, 15, 18, 39);
+        editTextWayHandler();
+        oldPriceBox = new DataBox(7, 7, 50);
+        newPriceBox = new DataBox(3, 15, 18, 39);
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.buttonCalc) {
-            getTimeWayBoost();
+            getTimeAndWayAndBoost();
             calculateAndSet();
         } else {
             // очистка полей ввода
@@ -101,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void etWayHandler() {
+    private void editTextWayHandler() {
         etWay.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -115,12 +83,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (way() > 25) {
-                    chbPrigorod.setVisibility(View.VISIBLE);
+                if (getFloatOfView(etWay) > 25) {
+                    chBox.get(PRIGOROD).setVisibility(View.VISIBLE);
 //                    chbWaiting.setTextSize(12);
 //                    chbGarantpik.setTextSize(12);
                 } else {
-                    chbPrigorod.setVisibility(View.GONE);
+                    chBox.get(PRIGOROD).setVisibility(View.GONE);
                 }
             }
         });
@@ -131,30 +99,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // получение данных из полей ввода
-    private float getFloatOfEditText(EditText et) {
-        if (!et.getText().toString().equals("")) {
-            return Float.parseFloat(et.getText().toString());
+    private float getFloatOfView(View v) {
+        if (v instanceof TextView) {
+            TextView tv = (TextView) v;
+            if (!tv.getText().toString().equals("")) {
+                return Float.parseFloat(tv.getText().toString());
+            }
+        } else if (v instanceof Spinner) {
+            Spinner sp = (Spinner) v;
+            return Float.parseFloat((String) sp.getSelectedItem());
         }
         return 0;
     }
 
-    private void getTimeWayBoost() {
-        time = getFloatOfEditText(etTime);
-        way = way();
-        boost = Float.parseFloat((String) boostSpinner.getSelectedItem());
-    }
-
-    private float way() {
-        return getFloatOfEditText(etWay);
+    private void getTimeAndWayAndBoost() {
+        DataBox.setTime(getFloatOfView(etTime));
+        DataBox.setWay(getFloatOfView(etWay));
+        DataBox.setBoost(getFloatOfView(boostSpinner));
     }
 
     private void calculateAndSet() {
-        setResults(tvResultOfOldPrice, tvResultOfOldPrice1, calculateOfPrice(oldPriceBox));
-        setResults(tvResultOfNewPrice, tvResultOfNewPrice1, calculateOfPrice(newPriceBox));
-    }
-
-    private float calculateOfPrice(BoxData bd) {
-        return (((((time * bd.getPriceTime() + way * bd.getPriceWay())) + bd.getMinPrice()) * boost)) * uberCommission;
+        Calculate oldCalculatePrice = new Calculate(oldPriceBox, chBox);
+        setResults(tvResultOfOldPrice, oldCalculatePrice.getResultPrice());
+        setResults(tvResultOfOldPrice1, oldCalculatePrice.getResultPriceAfterCommission());
     }
 
     private void setResults(TextView tv, float priceTotal) {

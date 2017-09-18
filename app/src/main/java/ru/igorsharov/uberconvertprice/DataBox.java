@@ -1,9 +1,34 @@
 package ru.igorsharov.uberconvertprice;
 
 class DataBox {
+
     private int timePrice, wayPrice, wayOver25price, supplyCarPrice;
-    private static float time, way, boost;
-    private float uberCommission = 0.2f, pathnerCommission = 0.05f;
+    private static float time, timeWaiting, way, boost;
+    private float uberCommission = 0.2f, partnerCommission = 0.05f;
+    private Calculate calculate = new Calculate();
+    private boolean way25 = false;
+    private boolean partnerCommissionStat = false;
+
+
+    class Calculate {
+
+        private float base() {
+            return ((timePrice * (time - timeWaiting) + wayPrice * (way25 ? 25 : way) + wayOver25price * (way25 ? way - 25 : 0) + supplyCarPrice));
+        }
+
+        float baseWithoutCommission() {
+            return base() * boost;
+        }
+
+        float baseWithCommission() {
+            return (base() * boost * (1 - uberCommission)) * ((partnerCommissionStat ? (1 - partnerCommission) : 1));
+        }
+
+        float gBoostWithCommission() {
+            return base() * (boost - uberCommission) * ((partnerCommissionStat ? (1 - partnerCommission) : 1));
+        }
+    }
+
 
     DataBox(int timePrice, int wayPrice, int supplyCarPrice) {
         this.timePrice = timePrice;
@@ -11,7 +36,7 @@ class DataBox {
         this.supplyCarPrice = supplyCarPrice;
     }
 
-    DataBox(int timePrice, int wayPrice, int supplyCarPrice, int wayOver25price) {
+    DataBox(int timePrice, int wayPrice, int wayOver25price, int supplyCarPrice) {
         this(timePrice, wayPrice, supplyCarPrice);
         this.wayOver25price = wayOver25price;
     }
@@ -22,57 +47,45 @@ class DataBox {
         }
     }
 
-    void setParthnerCommission(float p) {
+    void setPartnerCommission(float p) {
         if (p > 0 && p < 1) {
-            pathnerCommission = p;
+            partnerCommission = p;
         }
     }
 
     static void setTime(float time) {
-        DataBox.time = time;
+        if (time >= 0) {
+            DataBox.time = time;
+        }
+    }
+
+    static void setTimeWaiting(float timeWaiting) {
+        if (timeWaiting >= 0) {
+            DataBox.timeWaiting = timeWaiting;
+        }
     }
 
     static void setWay(float way) {
-        DataBox.way = way;
+        if (way >= 0) {
+            DataBox.way = way;
+        }
     }
 
     static void setBoost(float boost) {
         DataBox.boost = boost;
     }
 
-    static float getTime() {
-        return time;
+    Calculate getCalculate() {
+        return calculate;
     }
 
-    static float getWay() {
-        return way;
+    void setPartnerCommissionStatus(boolean partnerCommissionStat) {
+        this.partnerCommissionStat = partnerCommissionStat;
     }
 
-    static float getBoost() {
-        return boost;
+    void setWay25(boolean way25) {
+        this.way25 = way25;
     }
 
-    int getTimePrice() {
-        return timePrice;
-    }
 
-    int getWayPrice() {
-        return wayPrice;
-    }
-
-    int getWayOver25price() {
-        return wayOver25price;
-    }
-
-    int getSupplyCarPrice() {
-        return supplyCarPrice;
-    }
-
-    float getUberCommission() {
-        return uberCommission;
-    }
-
-    float getPathnerCommission() {
-        return pathnerCommission;
-    }
 }

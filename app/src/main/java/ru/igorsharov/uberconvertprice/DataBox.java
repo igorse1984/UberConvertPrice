@@ -2,32 +2,19 @@ package ru.igorsharov.uberconvertprice;
 
 class DataBox {
 
-    private int timePrice, wayPrice, wayOver25price, supplyCarPrice;
-    private static float time, timeWaiting, way, boost;
-    private float uberCommission = 0.2f, partnerCommission = 0.05f;
-    private Calculate calculate = new Calculate();
+    private static float time;
+    private static float timeWaiting;
+    private static float way;
+    private static float boost;
+
+    private int timePrice;
+    private int wayPrice;
+    private int wayOver25price;
+    private int supplyCarPrice;
+    private float uberCommission = 0.2f;
+    private float partnerCommission = 0.05f;
     private boolean way25 = false;
     private boolean partnerCommissionStat = false;
-
-
-    class Calculate {
-
-        private float base() {
-            return ((timePrice * (time - timeWaiting) + wayPrice * (way25 ? 25 : way) + wayOver25price * (way25 ? way - 25 : 0) + supplyCarPrice));
-        }
-
-        float baseWithoutCommission() {
-            return base() * boost;
-        }
-
-        float baseWithCommission() {
-            return (base() * boost * (1 - uberCommission)) * ((partnerCommissionStat ? (1 - partnerCommission) : 1));
-        }
-
-        float gBoostWithCommission() {
-            return base() * (boost - uberCommission) * ((partnerCommissionStat ? (1 - partnerCommission) : 1));
-        }
-    }
 
 
     DataBox(int timePrice, int wayPrice, int supplyCarPrice) {
@@ -41,17 +28,6 @@ class DataBox {
         this.wayOver25price = wayOver25price;
     }
 
-    void setUberCommission(float u) {
-        if (u > 0 && u < 1) {
-            uberCommission = u;
-        }
-    }
-
-    void setPartnerCommission(float p) {
-        if (p > 0 && p < 1) {
-            partnerCommission = p;
-        }
-    }
 
     static void setTime(float time) {
         if (time >= 0) {
@@ -75,10 +51,6 @@ class DataBox {
         DataBox.boost = boost;
     }
 
-    Calculate getCalculate() {
-        return calculate;
-    }
-
     void setPartnerCommissionStatus(boolean partnerCommissionStat) {
         this.partnerCommissionStat = partnerCommissionStat;
     }
@@ -87,5 +59,19 @@ class DataBox {
         this.way25 = way25;
     }
 
+    private float base() {
+        return ((timePrice * (time - timeWaiting) + wayPrice * (way25 ? 25 : way) + wayOver25price * (way25 ? way - 25 : 0) + supplyCarPrice));
+    }
 
+    float getCalculateWithoutCommission() {
+        return base() * boost;
+    }
+
+    float getCalculateWithCommission() {
+        return (base() * boost * (1 - uberCommission)) * ((partnerCommissionStat ? (1 - partnerCommission) : 1));
+    }
+
+    float getCalculateGBoostWithCommission() {
+        return base() * (boost - uberCommission) * ((partnerCommissionStat ? (1 - partnerCommission) : 1));
+    }
 }

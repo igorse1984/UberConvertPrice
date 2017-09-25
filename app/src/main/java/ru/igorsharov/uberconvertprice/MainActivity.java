@@ -3,13 +3,16 @@ package ru.igorsharov.uberconvertprice;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -20,9 +23,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Spinner boostSpinner;
     private DataBox oldPriceBox, newPriceBox;
     private CheckBox chBoxPrigorod, chBoxBeznal, chBoxWaiting, chBoxGarantpik;
-
+    private Switch switchShowPrice;
+    private LinearLayout oldPrice;
 
     private void initView() {
+        oldPrice = (LinearLayout) findViewById(R.id.oldPrice);
         findViewById(R.id.buttonCalc).setOnClickListener(this);
         findViewById(R.id.buttonClearEditText).setOnClickListener(this);
         etTime = (EditText) findViewById(R.id.editTextTime);
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         chBoxBeznal = (CheckBox) findViewById(R.id.chbBeznal);
         chBoxWaiting = (CheckBox) findViewById(R.id.chbWaiting);
         chBoxGarantpik = (CheckBox) findViewById(R.id.chbGarantpik);
+        switchShowPrice = (Switch) findViewById(R.id.switch2);
     }
 
     @Override
@@ -68,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clearViewText(tvResultOfNewPrice);
         clearViewText(tvResultOfOldPrice1);
         clearViewText(tvResultOfNewPrice1);
+        etTime.requestFocus();
         boostSpinner.setSelection(0);
     }
 
@@ -92,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     chBoxPrigorod.setChecked(false);
                     chBoxPrigorod.setVisibility(View.GONE);
                 }
-                chBoxTextSizeHandler();
             }
         });
 
@@ -107,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     chBoxGarantpik.setChecked(false);
                     chBoxGarantpik.setVisibility(View.GONE);
                 }
-                chBoxTextSizeHandler();
             }
 
             @Override
@@ -152,19 +157,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        // слушаем switch
+        switchShowPrice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                oldPrice.setVisibility(b ? View.VISIBLE : View.GONE);
+            }
+        });
+
     }
 
-    void chBoxTextSizeHandler() {
-        if (chBoxGarantpik.getVisibility() == View.VISIBLE && chBoxPrigorod.getVisibility() == View.VISIBLE) {
-            // убрать хардкор из размеров, решить задачу с масштабированием
-            chBoxWaiting.setTextSize(12);
-            chBoxGarantpik.setTextSize(12);
-        }
-        if (chBoxGarantpik.getVisibility() == View.GONE && chBoxPrigorod.getVisibility() == View.GONE) {
-            chBoxWaiting.setTextSize(14);
-            chBoxGarantpik.setTextSize(14);
-        }
-    }
 
     private void clearViewText(TextView view) {
         view.setText("");
@@ -193,13 +195,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void calculateAndSetResult() {
         getTimeAndWayAndBoost();
-        setResults(tvResultOfOldPrice, oldPriceBox.getCalculate().baseWithoutCommission());
-        setResults(tvResultOfNewPrice, newPriceBox.getCalculate().baseWithoutCommission());
-
-        float oldPrice1 = chBoxGarantpik.isChecked() ? oldPriceBox.getCalculate().gBoostWithCommission() : oldPriceBox.getCalculate().baseWithCommission();
-        float newPrice1 = chBoxGarantpik.isChecked() ? newPriceBox.getCalculate().gBoostWithCommission() : newPriceBox.getCalculate().baseWithCommission();
-        setResults(tvResultOfOldPrice1, oldPrice1);
-        setResults(tvResultOfNewPrice1, newPrice1);
+        setResults(tvResultOfOldPrice, oldPriceBox.getCalculateWithoutCommission());
+        setResults(tvResultOfNewPrice, newPriceBox.getCalculateWithoutCommission());
+        setResults(tvResultOfOldPrice1, chBoxGarantpik.isChecked() ? oldPriceBox.getCalculateGBoostWithCommission() : oldPriceBox.getCalculateWithCommission());
+        setResults(tvResultOfNewPrice1, chBoxGarantpik.isChecked() ? newPriceBox.getCalculateGBoostWithCommission() : newPriceBox.getCalculateWithCommission());
     }
 
 

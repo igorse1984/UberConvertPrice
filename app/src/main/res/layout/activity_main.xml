@@ -79,11 +79,11 @@
 
     <LinearLayout
         android:id="@+id/oldPrice"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/textView"
@@ -115,20 +115,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/textViewWait"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:cursorVisible="false"
-            android:gravity="center"
-            android:hint="@string/timeWait"
-            android:inputType="numberDecimal"
-            android:maxLength="5"
-            android:maxLines="1"
-            android:textSize="16sp"
-            android:visibility="gone" />
 
         <EditText
             android:id="@+id/editTextTime"
@@ -175,12 +161,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/chbWaiting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ожидание" />
 
         <CheckBox
             android:id="@+id/chbBeznal"

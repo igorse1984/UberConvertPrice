@@ -3,7 +3,6 @@ package ru.igorsharov.uberconvertprice;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,34 +14,38 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import ru.igorsharov.uberconvertprice.calculation.Tarif3_12;
+import ru.igorsharov.uberconvertprice.calculation.Tarif7_7;
+import ru.igorsharov.uberconvertprice.database.CalcDb;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText etTime, etWay, etWait;
+    private EditText etTime, etWay;
     private TextView tvResultOfNewPrice, tvResultOfOldPrice;
     private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
     private Spinner boostSpinner;
-    private DataBox oldPriceBox, newPriceBox;
-    private CheckBox chBoxPrigorod, chBoxBeznal, chBoxWaiting, chBoxGarantpik;
+    private CheckBox chBoxOblast, chBoxBeznal, chBoxGarantpik;
     private Switch switchShowPrice;
     private LinearLayout oldPrice;
+    private StateBox stateBox;
+    private Tarif3_12 tarif3_12;
+    private Tarif7_7 tarif7_7;
 
     private void initView() {
-        oldPrice = (LinearLayout) findViewById(R.id.oldPrice);
+        oldPrice = findViewById(R.id.oldPrice);
         findViewById(R.id.buttonCalc).setOnClickListener(this);
         findViewById(R.id.buttonClearEditText).setOnClickListener(this);
-        etTime = (EditText) findViewById(R.id.editTextTime);
-        etWay = (EditText) findViewById(R.id.editTextWay);
-        etWait = (EditText) findViewById(R.id.textViewWait);
-        tvResultOfNewPrice = (TextView) findViewById(R.id.textViewNewPrice);
-        tvResultOfOldPrice = (TextView) findViewById(R.id.textViewOldPrice);
-        tvResultOfNewPrice1 = (TextView) findViewById(R.id.textViewNewPrice1);
-        tvResultOfOldPrice1 = (TextView) findViewById(R.id.textViewOldPrice1);
-        boostSpinner = (Spinner) findViewById(R.id.boostSpinner);
-        chBoxPrigorod = (CheckBox) findViewById(R.id.chbPrigorod);
-        chBoxBeznal = (CheckBox) findViewById(R.id.chbBeznal);
-        chBoxWaiting = (CheckBox) findViewById(R.id.chbWaiting);
-        chBoxGarantpik = (CheckBox) findViewById(R.id.chbGarantpik);
-        switchShowPrice = (Switch) findViewById(R.id.switch2);
+        etTime = findViewById(R.id.editTextTime);
+        etWay = findViewById(R.id.editTextWay);
+        tvResultOfNewPrice = findViewById(R.id.textViewNewPrice);
+        tvResultOfOldPrice = findViewById(R.id.textViewOldPrice);
+        tvResultOfNewPrice1 = findViewById(R.id.textViewNewPrice1);
+        tvResultOfOldPrice1 = findViewById(R.id.textViewOldPrice1);
+        boostSpinner = findViewById(R.id.boostSpinner);
+        chBoxOblast = findViewById(R.id.chbPrigorod);
+        chBoxBeznal = findViewById(R.id.chbBeznal);
+        chBoxGarantpik = findViewById(R.id.chbGarantpik);
+        switchShowPrice = findViewById(R.id.switch2);
     }
 
     @Override
@@ -52,30 +55,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         // для отслеживания в поле EditText километража свыше 25км
         listenerHandler();
-        oldPriceBox = new DataBox(7, 7, 50);
-        newPriceBox = new DataBox(3, 12, 18, 39);
+        // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
+        stateBox = new StateBox();
+        // инициализируем тарифы
+        tarif3_12 = new Tarif3_12(stateBox);
+        tarif7_7 = new Tarif7_7(stateBox);
     }
 
+
+    // выполнение расчета по нажатию кнопки
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.buttonCalc) {
+            stateBox.setData(getDataOfView(etWay), getDataOfView(etTime), getDataOfView(boostSpinner));
+            // добавление данных в БД
+            CalcDb.get(getApplicationContext()).addCalc(tarif3_12);
             calculateAndSetResult();
         } else {
-            clear();
+            clsView();
         }
     }
 
-    void clear() {
+    private void clsView() {
         // очистка полей ввода
         clearViewText(etTime);
         clearViewText(etWay);
-        clearViewText(etWait);
         clearViewText(tvResultOfOldPrice);
         clearViewText(tvResultOfNewPrice);
         clearViewText(tvResultOfOldPrice1);
         clearViewText(tvResultOfNewPrice1);
         etTime.requestFocus();
         boostSpinner.setSelection(0);
+    }
+
+
+    private void clearViewText(TextView view) {
+        view.setText("");
     }
 
     private void listenerHandler() {
@@ -93,11 +108,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (getFloatOfView(etWay) > 25) {
-                    chBoxPrigorod.setVisibility(View.VISIBLE);
+                if (getDataOfView(etWay) > 25) {
+                    chBoxOblast.setVisibility(View.VISIBLE);
                 } else {
-                    chBoxPrigorod.setChecked(false);
-                    chBoxPrigorod.setVisibility(View.GONE);
+                    chBoxOblast.setChecked(false);
+                    chBoxOblast.setVisibility(View.GONE);
                 }
             }
         });
@@ -108,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i > 0) {
                     chBoxGarantpik.setVisibility(View.VISIBLE);
-                    calculateAndSetResult();
                 } else {
                     chBoxGarantpik.setChecked(false);
                     chBoxGarantpik.setVisibility(View.GONE);
@@ -121,43 +135,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        // TODO оптимизировать чекбоксы, сделать имплемент интерфейса и свитч
         // слушаем чекбоксы
-        chBoxPrigorod.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        chBoxOblast.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                newPriceBox.setWay25(b);
-                calculateAndSetResult();
+                stateBox.setChBoxOblastState(b);
             }
         });
 
         chBoxBeznal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                oldPriceBox.setPartnerCommissionStatus(b);
-                newPriceBox.setPartnerCommissionStatus(b);
-                calculateAndSetResult();
+                stateBox.setChBoxBeznalState(b);
             }
         });
 
         chBoxGarantpik.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                calculateAndSetResult();
+                stateBox.setChBoxGarantpikState(b);
             }
         });
 
-        chBoxWaiting.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                etWait.setVisibility(b ? View.VISIBLE : View.GONE);
-                if (etWait.getVisibility() == View.GONE) {
-                    etWait.setText("");
-                    calculateAndSetResult();
-                }
-            }
-        });
-
-        // слушаем switch
+        // переключатель видимости старого тарифа
         switchShowPrice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -168,12 +169,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void clearViewText(TextView view) {
-        view.setText("");
-    }
-
-    // получение данных из полей ввода
-    private float getFloatOfView(View v) {
+    // общий метод получения данных из полей ввода
+    private float getDataOfView(View v) {
         if (v instanceof TextView) {
             TextView tv = (TextView) v;
             if (!tv.getText().toString().equals("")) {
@@ -186,19 +183,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return 0;
     }
 
-    private void getTimeAndWayAndBoost() {
-        DataBox.setTime(getFloatOfView(etTime));
-        DataBox.setTimeWaiting(getFloatOfView(etWait));
-        DataBox.setWay(getFloatOfView(etWay));
-        DataBox.setBoost(getFloatOfView(boostSpinner));
-    }
 
     private void calculateAndSetResult() {
-        getTimeAndWayAndBoost();
-        setResults(tvResultOfOldPrice, oldPriceBox.getCalculateWithoutCommission());
-        setResults(tvResultOfNewPrice, newPriceBox.getCalculateWithoutCommission());
-        setResults(tvResultOfOldPrice1, chBoxGarantpik.isChecked() ? oldPriceBox.getCalculateGBoostWithCommission() : oldPriceBox.getCalculateWithCommission());
-        setResults(tvResultOfNewPrice1, chBoxGarantpik.isChecked() ? newPriceBox.getCalculateGBoostWithCommission() : newPriceBox.getCalculateWithCommission());
+        setResults(tvResultOfNewPrice, tarif3_12.getCost());
+        setResults(tvResultOfNewPrice1, tarif3_12.getProfit());
+        setResults(tvResultOfOldPrice, tarif7_7.getCost());
+        setResults(tvResultOfOldPrice1, tarif7_7.getProfit());
     }
 
 
@@ -206,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv.setText(String.valueOf((int) priceTotal).concat(" руб."));
     }
 
-// Скрыть клавиатуру с экрана
+// Способ скрыть клавиатуру с экрана
 //    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //                    imm.hideSoftInputFromWindow(boostSpinner.getWindowToken(),
 //    InputMethodManager.HIDE_NOT_ALWAYS);

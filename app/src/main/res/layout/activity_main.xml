@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -116,35 +117,52 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/editTextTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:hint="@string/time"
-            android:inputType="numberDecimal"
-            android:maxLength="5"
-            android:maxLines="1"
-            android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/editTextWay"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:hint="@string/way"
-            android:inputType="numberDecimal"
-            android:maxLength="5"
-            android:maxLines="1"
-            android:textSize="16sp" />
+            app:hintTextAppearance="@style/EditTextHintStyleOne">
+
+            <EditText
+                android:id="@+id/editTextTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:hint="@string/time"
+                android:inputType="numberDecimal"
+                android:maxLength="5"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:theme="@style/EditTextStyle" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:hintTextAppearance="@style/EditTextHintStyleTwo">
+
+            <EditText
+                android:id="@+id/editTextWay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:hint="@string/way"
+                android:inputType="numberDecimal"
+                android:maxLength="5"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:theme="@style/EditTextStyle" />
+        </android.support.design.widget.TextInputLayout>
 
         <Spinner
             android:id="@+id/boostSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:entries="@array/boost" />
 

@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.lang.ref.WeakReference;
+
 import ru.igorsharov.uberconvertprice.calculation.Calculator;
 import ru.igorsharov.uberconvertprice.database.CalcDbSchema.CalcTable;
 
@@ -14,7 +16,7 @@ import ru.igorsharov.uberconvertprice.database.CalcDbSchema.CalcTable;
 public class CalcDb {
 
     private static CalcDb calcDb;
-    private Context context;
+    private WeakReference weakReference; // слабая ссылка для хранения контекста
     private SQLiteDatabase sqLiteDatabase;
 
     public static CalcDb get(Context context) {
@@ -26,7 +28,7 @@ public class CalcDb {
 
 
     private CalcDb(Context context) {
-        this.context = context.getApplicationContext();
+        weakReference = new WeakReference<>(context.getApplicationContext());
         sqLiteDatabase = new CalcDbHelper(context).getWritableDatabase();
     }
 

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initView();
         // для отслеживания в поле EditText километража свыше 25км
-        listenerHandler();
+        listenerHandler(); // TODO должна быть привязка к тарифу
         // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
         stateBox = new StateBox();
         // инициализируем тарифы

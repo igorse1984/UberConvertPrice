@@ -14,11 +14,41 @@
         android:layout_height="wrap_content"
         android:text="@string/descPrice" />
 
-    <Switch
-        android:id="@+id/switch2"
-        android:layout_width="250dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="старый тариф" />
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/switch2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="старый тариф" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:hintTextAppearance="@style/EditTextHintStyleOne">
+
+            <ru.igorsharov.uberconvertprice.CustomEditText
+                android:id="@+id/editTextPrthnerCommisson"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:cursorVisible="false"
+                android:ellipsize="end"
+                android:hint="Комиссия партнера"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:maxLength="5"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:theme="@style/EditTextStyle" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
 
 
     <LinearLayout
@@ -124,12 +154,13 @@
             android:layout_weight="1"
             app:hintTextAppearance="@style/EditTextHintStyleOne">
 
-            <EditText
+            <ru.igorsharov.uberconvertprice.CustomEditText
                 android:id="@+id/editTextTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:cursorVisible="false"
+                android:ellipsize="end"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:hint="@string/time"
@@ -146,12 +177,13 @@
             android:layout_weight="1"
             app:hintTextAppearance="@style/EditTextHintStyleTwo">
 
-            <EditText
+            <ru.igorsharov.uberconvertprice.CustomEditText
                 android:id="@+id/editTextWay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:cursorVisible="false"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:hint="@string/way"
                 android:inputType="numberDecimal"
@@ -183,13 +215,6 @@
         android:orientation="horizontal">
 
         <CheckBox
-            android:id="@+id/chbBeznal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoSizeMinTextSize="5dp"
-            android:text="Безнал" />
-
-        <CheckBox
             android:id="@+id/chbGarantpik"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -200,7 +225,6 @@
             android:id="@+id/chbPrigorod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:autoSizeMinTextSize="5dp"
             android:text="Пригород"
             android:visibility="gone" />
     </LinearLayout>
@@ -211,15 +235,15 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/lbuttonClearEditText"
+            android:id="@+id/buttonClearEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:text="@string/clearBtn" />
+            android:text="@string/clearBtn"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/buttonCalc"
-            style="@style/ButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

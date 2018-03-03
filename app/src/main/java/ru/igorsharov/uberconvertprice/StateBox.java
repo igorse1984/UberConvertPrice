@@ -5,30 +5,22 @@ package ru.igorsharov.uberconvertprice;
  */
 
 public class StateBox {
-    private boolean chBoxBeznalState;
     private boolean chBoxGarantpikState;
     private boolean chBoxOblastState;
     private float distState;
     private float timeState;
     private float ratioState;
+    private float pathnerComission;
 
 
 
     /* чекбоксы */
-    void setChBoxBeznalState(boolean chBoxBeznalState) {
-        this.chBoxBeznalState = chBoxBeznalState;
-    }
-
     void setChBoxGarantpikState(boolean chBoxGarantpikState) {
         this.chBoxGarantpikState = chBoxGarantpikState;
     }
 
     void setChBoxOblastState(boolean chBoxOblastState) {
         this.chBoxOblastState = chBoxOblastState;
-    }
-
-    public boolean getChBoxBeznalState() {
-        return chBoxBeznalState;
     }
 
     public boolean getChBoxGarantpikState() {
@@ -40,10 +32,11 @@ public class StateBox {
     }
 
     /* вводимые данные */
-    void setData(float dist, float time, float ratio) {
+    void setData(float dist, float time, float ratio, float pathnerComission) {
         distState = dist;
         timeState = time;
         ratioState = ratio;
+        this.pathnerComission = pathnerComission;
     }
 
     public float getDist() {
@@ -56,5 +49,9 @@ public class StateBox {
 
     public float getRatio() {
         return ratioState;
+    }
+
+    public float getPathnerComission() {
+        return pathnerComission;
     }
 }

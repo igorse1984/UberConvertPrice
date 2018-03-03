@@ -20,7 +20,7 @@ abstract public class Calculator {
     float timePrice; // за 1 мин
     float supplyCarPrice; // за подачу автомобиля
     private float uberComission = 0.8f; // комиссия убера
-    private float beznalComission = 0.95f; // комиссия партнера
+    private float parthnerComission = 5f; // комиссия партнера
 
     // коробка с входными значениями для расчета
     StateBox stateBox;
@@ -54,7 +54,7 @@ abstract public class Calculator {
         return getCost()
                 * uberComission
                 * (stateBox.getChBoxGarantpikState() ? ratio : 1)
-                * (stateBox.getChBoxBeznalState() ? beznalComission : 1);
+                * (1 - (stateBox.getPathnerComission() / 100));
     }
 
     public String getTitle() {
@@ -65,7 +65,12 @@ abstract public class Calculator {
         return ratio;
     }
 
+    public float getParthnerComission() {
+        return parthnerComission;
+    }
+
     public float getKmOver() {
         return kmOver;
+
     }
 }

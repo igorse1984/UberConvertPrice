@@ -1,5 +1,6 @@
 package ru.igorsharov.uberconvertprice;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,17 +24,17 @@ import ru.igorsharov.uberconvertprice.database.CalcDb;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText etTime, etWay;
     private TextView tvResultOfNewPrice, tvResultOfOldPrice;
     private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
     private Spinner boostSpinner;
-    private CheckBox chBoxOblast, chBoxBeznal, chBoxGarantpik;
+    private CheckBox chBoxOblast, chBoxGarantpik;
     private Switch switchShowPrice;
     private LinearLayout oldPrice;
     private StateBox stateBox;
     private Tarif3_12 tarif3_12;
     private Tarif7_7 tarif7_7;
     private Button btnCls;
+    private CustomEditText etParthnerCommission, etTime, etWay;
 
     private void initView() {
         oldPrice = findViewById(R.id.oldPrice);
@@ -47,12 +48,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvResultOfOldPrice1 = findViewById(R.id.textViewOldPrice1);
         boostSpinner = findViewById(R.id.boostSpinner);
         chBoxOblast = findViewById(R.id.chbPrigorod);
-        //TODO убрать и сделать окно ввода партнерской комиссии
-        chBoxBeznal = findViewById(R.id.chbBeznal);
-
         chBoxGarantpik = findViewById(R.id.chbGarantpik);
         switchShowPrice = findViewById(R.id.switch2);
         btnCls = findViewById(R.id.buttonClearEditText);
+
+        etParthnerCommission = findViewById(R.id.editTextPrthnerCommisson);
+        // фокус на времени при загрузке приложения
+        etTime.requestFocus();
     }
 
     @Override
@@ -63,13 +65,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        // для отслеживания в поле EditText километража свыше
+        // для отслеживания в поле EditText километража свыше заданного
         listenerHandler();
         // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
         stateBox = new StateBox();
         // инициализируем тарифы
         tarif3_12 = new Tarif3_12(stateBox);
         tarif7_7 = new Tarif7_7(stateBox);
+        etParthnerCommission.setText(String.valueOf(tarif3_12.getParthnerComission()));
     }
 
 
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.buttonCalc) {
-            stateBox.setData(getDataOfView(etWay), getDataOfView(etTime), getDataOfView(boostSpinner));
+            stateBox.setData(getDataOfView(etWay), getDataOfView(etTime), getDataOfView(boostSpinner), getDataOfView(etParthnerCommission));
             // добавление данных в БД
             CalcDb.get(getApplicationContext()).addCalc(tarif3_12);
             calculateAndSetResult();
@@ -131,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     chBoxOblast.setVisibility(View.GONE);
                 }
 
-                // отслеживание пустотности соседнего EditText
-                if (String.valueOf(etWay.getText()).equals(""))
+                // отслеживание пустотности EditText
+                if (String.valueOf(etWay.getText()).equals("") && String.valueOf(etTime.getText()).equals(""))
                     btnCls.setVisibility(View.GONE);
                 else
                     btnCls.setVisibility(View.VISIBLE);
@@ -152,8 +155,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable s) {
-                // отслеживание пустотности соседнего EditText
-                if (String.valueOf(etTime.getText()).equals(""))
+                // отслеживание пустотности EditText
+                if (String.valueOf(etWay.getText()).equals("") && String.valueOf(etTime.getText()).equals(""))
                     btnCls.setVisibility(View.GONE);
                 else
                     btnCls.setVisibility(View.VISIBLE);
@@ -184,13 +187,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 stateBox.setChBoxOblastState(b);
-            }
-        });
-
-        chBoxBeznal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                stateBox.setChBoxBeznalState(b);
             }
         });
 

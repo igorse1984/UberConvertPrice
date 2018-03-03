@@ -64,4 +64,8 @@ abstract public class Calculator {
     public float getRatio() {
         return ratio;
     }
+
+    public float getKmOver() {
+        return kmOver;
+    }
 }

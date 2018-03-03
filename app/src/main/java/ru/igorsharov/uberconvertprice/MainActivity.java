@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private StateBox stateBox;
     private Tarif3_12 tarif3_12;
     private Tarif7_7 tarif7_7;
+    private Button btnCls;
 
     private void initView() {
         oldPrice = findViewById(R.id.oldPrice);
@@ -45,9 +47,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvResultOfOldPrice1 = findViewById(R.id.textViewOldPrice1);
         boostSpinner = findViewById(R.id.boostSpinner);
         chBoxOblast = findViewById(R.id.chbPrigorod);
+        //TODO убрать и сделать окно ввода партнерской комиссии
         chBoxBeznal = findViewById(R.id.chbBeznal);
+
         chBoxGarantpik = findViewById(R.id.chbGarantpik);
         switchShowPrice = findViewById(R.id.switch2);
+        btnCls = findViewById(R.id.buttonClearEditText);
     }
 
     @Override
@@ -58,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        // для отслеживания в поле EditText километража свыше 25км
-        listenerHandler(); // TODO должна быть привязка к тарифу
+        // для отслеживания в поле EditText километража свыше
+        listenerHandler();
         // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
         stateBox = new StateBox();
         // инициализируем тарифы
@@ -77,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             CalcDb.get(getApplicationContext()).addCalc(tarif3_12);
             calculateAndSetResult();
         } else {
-            if (!String.valueOf(etTime.getText()).equals("") || !String.valueOf(etWay.getText()).equals(""))
-                getSnackbar(view, "Очищено").show();
+
+            getSnackbar(view, "Очищено").show();
             clsView();
         }
     }
@@ -110,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etWay.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -120,12 +124,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (getDataOfView(etWay) > 25) {
+                if (getDataOfView(etWay) > tarif3_12.getKmOver()) {
                     chBoxOblast.setVisibility(View.VISIBLE);
                 } else {
                     chBoxOblast.setChecked(false);
                     chBoxOblast.setVisibility(View.GONE);
                 }
+
+                // отслеживание пустотности соседнего EditText
+                if (String.valueOf(etWay.getText()).equals(""))
+                    btnCls.setVisibility(View.GONE);
+                else
+                    btnCls.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // слушаем поле EditText время
+        etTime.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // отслеживание пустотности соседнего EditText
+                if (String.valueOf(etTime.getText()).equals(""))
+                    btnCls.setVisibility(View.GONE);
+                else
+                    btnCls.setVisibility(View.VISIBLE);
             }
         });
 

@@ -211,7 +211,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/lbuttonClearEditText"
+            android:id="@+id/buttonClearEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
@@ -219,7 +219,6 @@
 
         <Button
             android:id="@+id/buttonCalc"
-            style="@style/ButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

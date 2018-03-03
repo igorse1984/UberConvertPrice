@@ -1,7 +1,9 @@
 package ru.igorsharov.uberconvertprice;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
         // для отслеживания в поле EditText километража свыше 25км
         listenerHandler(); // TODO должна быть привязка к тарифу
         // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
@@ -71,9 +76,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // добавление данных в БД
             CalcDb.get(getApplicationContext()).addCalc(tarif3_12);
             calculateAndSetResult();
+
+            getSnackbar(view, "Test Message").show();
+
         } else {
             clsView();
         }
+    }
+
+
+    private Snackbar getSnackbar(View view, String msg) {
+        return Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
     }
 
     private void clsView() {
@@ -196,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv.setText(String.valueOf((int) priceTotal).concat(" руб."));
     }
 
-// Способ скрыть клавиатуру с экрана
+// Способ скрывать клавиатуру с экрана
 //    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //                    imm.hideSoftInputFromWindow(boostSpinner.getWindowToken(),
 //    InputMethodManager.HIDE_NOT_ALWAYS);

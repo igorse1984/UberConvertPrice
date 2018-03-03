@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@color/colorOldPrice"
+            android:textColor="@color/colorGray"
             android:textSize="@dimen/sizeTextPrice" />
 
         <TextView
@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@color/colorOldPrice"
+            android:textColor="@color/colorGray"
             android:textSize="@dimen/sizeTextPrice" />
     </LinearLayout>
 
@@ -129,6 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:cursorVisible="false"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:hint="@string/time"
@@ -150,6 +151,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:cursorVisible="false"
                 android:gravity="center"
                 android:hint="@string/way"
                 android:inputType="numberDecimal"

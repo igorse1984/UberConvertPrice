@@ -9,7 +9,7 @@
     </style>
 
     <!--Input field style -->
-    <style name="EditTextStyle" parent="Theme.AppCompat.Light">
+    <style name="EditTextStyle">
         <item name="colorControlNormal">@android:color/darker_gray</item>
         <item name="colorControlActivated">@android:color/black</item>
     </style>

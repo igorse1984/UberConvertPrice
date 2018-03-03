@@ -76,10 +76,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // добавление данных в БД
             CalcDb.get(getApplicationContext()).addCalc(tarif3_12);
             calculateAndSetResult();
-
-            getSnackbar(view, "Test Message").show();
-
         } else {
+            if (!String.valueOf(etTime.getText()).equals("") || !String.valueOf(etWay.getText()).equals(""))
+                getSnackbar(view, "Очищено").show();
             clsView();
         }
     }

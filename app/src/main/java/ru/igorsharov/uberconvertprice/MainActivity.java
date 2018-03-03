@@ -83,19 +83,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // добавление данных в БД
             CalcDb.get(getApplicationContext()).addCalc(tariffTwo);
             calculateAndSetResult();
+            getSnackbar(view, "Посчитано", R.color.colorGreen).show();
         } else {
-
-            getSnackbar(view, "Рассчет удален").show();
+            getSnackbar(view, "Очищено", R.color.colorAccent).show();
             clsView();
         }
     }
 
 
-    private Snackbar getSnackbar(View view, String msg) {
+    private Snackbar getSnackbar(View view, String msg, int color) {
         Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
         View snackBarView = snackbar.getView();
         //TODO не нравится способ получения контекста, да и под вопросом способ получения цвета из ресурсов
-        snackBarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+        snackBarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), color));
         return snackbar;
     }
 

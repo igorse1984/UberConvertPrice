@@ -6,9 +6,9 @@ import ru.igorsharov.uberconvertprice.StateBox;
  * Created by IgorSE on 13.02.2018.
  */
 
-public class Tarif7_7 extends Calculator {
+public class TariffOne extends Calculator {
 
-    public Tarif7_7(StateBox stateBox) {
+    public TariffOne(StateBox stateBox) {
         super(stateBox);
         /* Прайс по тарифу (руб.) */
         title = "7 7";

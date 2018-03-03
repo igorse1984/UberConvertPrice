@@ -1,8 +1,8 @@
 package ru.igorsharov.uberconvertprice;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -12,14 +12,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import ru.igorsharov.uberconvertprice.calculation.Tarif3_12;
-import ru.igorsharov.uberconvertprice.calculation.Tarif7_7;
+import ru.igorsharov.uberconvertprice.calculation.TariffOne;
+import ru.igorsharov.uberconvertprice.calculation.TariffTwo;
 import ru.igorsharov.uberconvertprice.database.CalcDb;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,8 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Switch switchShowPrice;
     private LinearLayout oldPrice;
     private StateBox stateBox;
-    private Tarif3_12 tarif3_12;
-    private Tarif7_7 tarif7_7;
+    private TariffTwo tariffTwo;
+    private TariffOne TariffOne;
     private Button btnCls;
     private CustomEditText etParthnerCommission, etTime, etWay;
 
@@ -70,9 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
         stateBox = new StateBox();
         // инициализируем тарифы
-        tarif3_12 = new Tarif3_12(stateBox);
-        tarif7_7 = new Tarif7_7(stateBox);
-        etParthnerCommission.setText(String.valueOf(tarif3_12.getParthnerComission()));
+        tariffTwo = new TariffTwo(stateBox);
+        TariffOne = new TariffOne(stateBox);
+        etParthnerCommission.setText(String.valueOf(tariffTwo.getParthnerComission()));
     }
 
 
@@ -82,18 +81,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view.getId() == R.id.buttonCalc) {
             stateBox.setData(getDataOfView(etWay), getDataOfView(etTime), getDataOfView(boostSpinner), getDataOfView(etParthnerCommission));
             // добавление данных в БД
-            CalcDb.get(getApplicationContext()).addCalc(tarif3_12);
+            CalcDb.get(getApplicationContext()).addCalc(tariffTwo);
             calculateAndSetResult();
         } else {
 
-            getSnackbar(view, "Очищено").show();
+            getSnackbar(view, "Рассчет удален").show();
             clsView();
         }
     }
 
 
     private Snackbar getSnackbar(View view, String msg) {
-        return Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
+        View snackBarView = snackbar.getView();
+        //TODO не нравится способ получения контекста, да и под вопросом способ получения цвета из ресурсов
+        snackBarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+        return snackbar;
     }
 
     private void clsView() {
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (getDataOfView(etWay) > tarif3_12.getKmOver()) {
+                if (getDataOfView(etWay) > tariffTwo.getKmOver()) {
                     chBoxOblast.setVisibility(View.VISIBLE);
                 } else {
                     chBoxOblast.setChecked(false);
@@ -224,10 +227,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void calculateAndSetResult() {
-        setResults(tvResultOfNewPrice, tarif3_12.getCost());
-        setResults(tvResultOfNewPrice1, tarif3_12.getProfit());
-        setResults(tvResultOfOldPrice, tarif7_7.getCost());
-        setResults(tvResultOfOldPrice1, tarif7_7.getProfit());
+        setResults(tvResultOfNewPrice, tariffTwo.getCost());
+        setResults(tvResultOfNewPrice1, tariffTwo.getProfit());
+        setResults(tvResultOfOldPrice, TariffOne.getCost());
+        setResults(tvResultOfOldPrice1, TariffOne.getProfit());
     }
 
 

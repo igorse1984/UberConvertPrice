@@ -18,6 +18,7 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
+    DrawerLayout drawer;
     CalcFragment calcFragment = new CalcFragment();
 
     @Override
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        // инициализация гамбургера на тулбаре
+        drawer = findViewById(R.id.drawer_layout);
+        // инициализация кнопки гамбургера на тулбаре
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
@@ -56,11 +57,14 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // SupportFragmentManager для фрагментов из библиотеки support
         getSupportFragmentManager().beginTransaction().add(R.id.container, calcFragment).commit();
 
     }
 
 
+    // метод отслеживающий нажатие кнопки назад
+    // в данном случае закрывыет Drawer-меню если оно открыто
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -127,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements
         setTitle(item.getTitle());
 
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

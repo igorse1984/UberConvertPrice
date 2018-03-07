@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getFragmentManager().beginTransaction().add(R.id.container, calcFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.container, calcFragment).commit();
+
     }
 
 
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements
 
         switch (id) {
             case R.id.nav_calc:
-                fragmentClass = CalcFragment.class;
+                fragment = calcFragment;
                 Toast.makeText(getApplicationContext(),
                         "Вы выбрали 1",
                         Toast.LENGTH_SHORT).show();
@@ -120,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
         }
-
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {

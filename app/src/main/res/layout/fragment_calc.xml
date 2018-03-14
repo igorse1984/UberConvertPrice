@@ -1,263 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_height="match_parent">
 
-    <!--<include-->
-    <!--здесь можно сделать внутренний toolbar-->
-    <!--layout="@layout/toolbar_layout"-->
-    <!--/>-->
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/descPrice" />
+    <include layout="@layout/toolbar_calc" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <Switch
-            android:id="@+id/switch2"
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="старый тариф" />
+            android:text="@string/descPrice" />
 
-        <!--TextInputLayout в данном сулчае для того чтобы hint стал анимированным-->
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:hintTextAppearance="@style/EditTextHintStyleOne">
+            android:orientation="horizontal">
 
-            <ru.igorsharov.uberconvertprice.CustomEditText
-                android:id="@+id/editTextPrthnerCommisson"
+            <Switch
+                android:id="@+id/switch2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:cursorVisible="false"
-                android:ellipsize="end"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:hint="Комиссия партнера"
-                android:inputType="numberDecimal"
-                android:maxLength="5"
-                android:maxLines="1"
-                android:textSize="16sp"
-                android:theme="@style/EditTextStyle" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
+                android:text="старый тариф" />
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.6" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/desc_total_price" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/desc_price" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.6"
-            android:text="@string/descNewPrice" />
-
-        <TextView
-            android:id="@+id/textViewNewPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="@dimen/sizeTextPrice" />
-
-        <TextView
-            android:id="@+id/textViewNewPrice1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="@dimen/sizeTextPrice" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/oldPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.6"
-            android:text="@string/descOldPrice" />
-
-        <TextView
-            android:id="@+id/textViewOldPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/colorGray"
-            android:textSize="@dimen/sizeTextPrice" />
-
-        <TextView
-            android:id="@+id/textViewOldPrice1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/colorGray"
-            android:textSize="@dimen/sizeTextPrice" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:hintTextAppearance="@style/EditTextHintStyleOne">
-
-            <ru.igorsharov.uberconvertprice.CustomEditText
-                android:id="@+id/editTextTime"
+            <!--TextInputLayout в данном сулчае для того чтобы hint стал анимированным-->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:cursorVisible="false"
-                android:ellipsize="end"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:hint="@string/time"
-                android:inputType="numberDecimal"
-                android:maxLength="5"
-                android:maxLines="1"
-                android:textSize="16sp"
-                android:theme="@style/EditTextStyle" />
-        </android.support.design.widget.TextInputLayout>
+                app:hintTextAppearance="@style/EditTextHintStyleOne">
 
-        <android.support.design.widget.TextInputLayout
+                <ru.igorsharov.uberconvertprice.CustomEditText
+                    android:id="@+id/editTextPrthnerCommisson"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:cursorVisible="false"
+                    android:ellipsize="end"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:hint="Комиссия партнера"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:theme="@style/EditTextStyle" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:hintTextAppearance="@style/EditTextHintStyleTwo">
+            android:orientation="horizontal">
 
-            <ru.igorsharov.uberconvertprice.CustomEditText
-                android:id="@+id/editTextWay"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.6" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:cursorVisible="false"
-                android:ellipsize="end"
                 android:gravity="center"
-                android:hint="@string/way"
-                android:inputType="numberDecimal"
-                android:maxLength="5"
-                android:maxLines="1"
-                android:textSize="16sp"
-                android:theme="@style/EditTextStyle" />
-        </android.support.design.widget.TextInputLayout>
+                android:text="@string/desc_total_price" />
 
-        <Spinner
-            android:id="@+id/boostSpinner"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/desc_price" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.6"
+                android:text="@string/descNewPrice" />
+
+            <TextView
+                android:id="@+id/textViewNewPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="@dimen/sizeTextPrice" />
+
+            <TextView
+                android:id="@+id/textViewNewPrice1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="@dimen/sizeTextPrice" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/oldPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.6"
+                android:text="@string/descOldPrice" />
+
+            <TextView
+                android:id="@+id/textViewOldPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/colorGray"
+                android:textSize="@dimen/sizeTextPrice" />
+
+            <TextView
+                android:id="@+id/textViewOldPrice1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/colorGray"
+                android:textSize="@dimen/sizeTextPrice" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:entries="@array/boost" />
+            android:orientation="horizontal">
 
 
-    </LinearLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:hintTextAppearance="@style/EditTextHintStyleOne">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+                <ru.igorsharov.uberconvertprice.CustomEditText
+                    android:id="@+id/editTextTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:cursorVisible="false"
+                    android:ellipsize="end"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:hint="@string/time"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:theme="@style/EditTextStyle" />
+            </android.support.design.widget.TextInputLayout>
 
-    </RelativeLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:hintTextAppearance="@style/EditTextHintStyleTwo">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+                <ru.igorsharov.uberconvertprice.CustomEditText
+                    android:id="@+id/editTextWay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:cursorVisible="false"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:hint="@string/way"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:theme="@style/EditTextStyle" />
+            </android.support.design.widget.TextInputLayout>
 
-        <CheckBox
-            android:id="@+id/chbGarantpik"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Гарантпик"
-            android:visibility="gone" />
+            <Spinner
+                android:id="@+id/boostSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:entries="@array/boost" />
 
-        <CheckBox
-            android:id="@+id/chbPrigorod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Пригород"
-            android:visibility="gone" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/buttonClearEditText"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </RelativeLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:text="@string/clearBtn"
-            android:visibility="gone" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/buttonCalc"
+            <CheckBox
+                android:id="@+id/chbGarantpik"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Гарантпик"
+                android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/chbPrigorod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Пригород"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/calculate" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonClearEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/clearBtn"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonCalc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/calculate" />
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
+</android.support.design.widget.CoordinatorLayout>

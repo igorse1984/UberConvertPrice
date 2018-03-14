@@ -1,9 +1,13 @@
 package ru.igorsharov.uberconvertprice;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -30,7 +34,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
 
     private StateBox stateBox;
     private TariffTwo tariffTwo;
-    private TariffOne TariffOne;
+    private TariffOne tariffOne;
 
     private TextView tvResultOfNewPrice, tvResultOfOldPrice;
     private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
@@ -40,6 +44,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     private LinearLayout oldPrice;
     private Button btnCls;
     private CustomEditText etParthnerCommission, etTime, etWay;
+    private Toolbar toolbar;
 
     private void initView(View view) {
         oldPrice = view.findViewById(R.id.oldPrice);
@@ -60,20 +65,53 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         etParthnerCommission = view.findViewById(R.id.editTextPrthnerCommisson);
         // фокус на поле "время" при загрузке приложения
         etTime.requestFocus();
+
+        // TODO переделать на добавление расчета в БД
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Здесь будет реализовано добавление в БД", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+
+    private void initToolbar(View view) {
+        // делает ActionBar активным (появляется системный текст),
+        // но блокирует установку ручных титлов
+        toolbar = view.findViewById(R.id.my_toolbar);
+//        setSupportActionBar(toolbar);
+        toolbar.setTitle("Калькулятор");
+        DrawerLayout drawer = ((MainActivity) getActivity()).getDrawerLayout();
+        // инициализация кнопки гамбургера на тулбаре
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(), drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        // вешаем слушателя на drawer
+        drawer.addDrawerListener(toggle);
+
+        // синхронизирует hamburger menu с drawer
+        // без данной строки кнопка гамбургер не появится
+        toggle.syncState();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calc, container, false);
         initView(view);
+        initToolbar(view);
 
         // для отслеживания в поле EditText километража свыше заданного
         listenerHandler();
+
         // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
         stateBox = new StateBox();
+
         // инициализируем тарифы
+        tariffOne = new TariffOne(stateBox);
         tariffTwo = new TariffTwo(stateBox);
-        TariffOne = new TariffOne(stateBox);
+
         etParthnerCommission.setText(String.valueOf(tariffTwo.getParthnerComission()));
         return view;
     }
@@ -87,15 +125,15 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
             // добавление данных в БД
             CalcDb.get(getActivity()).addCalc(tariffTwo);
             calculateAndSetResult();
-            getSnackbar(view, "Посчитано", R.color.colorGreen).show();
+            printSnackbar(view, "Посчитано", R.color.colorGreen).show();
         } else {
-            getSnackbar(view, "Очищено", R.color.colorAccent).show();
+            printSnackbar(view, "Очищено", R.color.colorAccent).show();
             clsView();
         }
     }
 
 
-    private Snackbar getSnackbar(View view, String msg, int color) {
+    private Snackbar printSnackbar(View view, String msg, int color) {
         Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
         View snackBarView = snackbar.getView();
         //TODO не нравится способ получения контекста, да и под вопросом способ получения цвета из ресурсов
@@ -233,8 +271,8 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     private void calculateAndSetResult() {
         setResults(tvResultOfNewPrice, tariffTwo.getCost());
         setResults(tvResultOfNewPrice1, tariffTwo.getProfit());
-        setResults(tvResultOfOldPrice, TariffOne.getCost());
-        setResults(tvResultOfOldPrice1, TariffOne.getProfit());
+        setResults(tvResultOfOldPrice, tariffOne.getCost());
+        setResults(tvResultOfOldPrice1, tariffOne.getProfit());
     }
 
 

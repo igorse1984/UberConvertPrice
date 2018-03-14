@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 /**
  * Created by Игорь on 03.03.2018.
+ * кастомизируем класс для того, чтобы курсор невозможно было перемещать
  */
 
 
@@ -24,7 +25,6 @@ public class CustomEditText extends android.support.v7.widget.AppCompatEditText 
     }
 
     @Override
-    // переопределяем для того, чтобы курсор невозможно было переместить
     public void onSelectionChanged(int start, int end) {
 
         CharSequence text = getText();

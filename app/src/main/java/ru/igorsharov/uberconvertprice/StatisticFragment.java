@@ -6,11 +6,15 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class StatisticFragment extends Fragment {
@@ -19,9 +23,9 @@ public class StatisticFragment extends Fragment {
     CollapsingToolbarLayout collapsingToolbarLayout;
 
     // Recycler
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
 
     @Override
@@ -65,13 +69,24 @@ public class StatisticFragment extends Fragment {
     }
 
     private void initRecyclerView(View view) {
-//        mRecyclerView = view.findViewById(R.id.my_recycler_view);
+        List<CustModelCard> custModelCardsList = new ArrayList<CustModelCard>();
+        int imgID;
+        for (int i = 1; i <= 100; i++) {
+            if (i%2 == 0){
+                imgID = R.drawable.ic_menu_send;
+            }else{
+                imgID = R.drawable.ic_menu_gallery;
+            }
+            custModelCardsList.add(new CustModelCard("Title "+i, "Description "+i, imgID));
+        }
+
+        recyclerView = view.findViewById(R.id.my_recycler_view);
         // use a linear layout manager
-//        mLayoutManager = new LinearLayoutManager(getActivity());
-//        mRecyclerView.setLayoutManager(mLayoutManager);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
         // specify an adapter (see also next example)
-//        mAdapter = new MyAdapter(myDataset);
-//        mRecyclerView.setAdapter(mAdapter);
+        adapter = new CustRVAdapter(custModelCardsList);
+        recyclerView.setAdapter(adapter);
 
     }
 

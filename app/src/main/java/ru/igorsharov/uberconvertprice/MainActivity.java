@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
-
     DrawerLayout drawer;
 
     CalcFragment calcFragment = new CalcFragment();
@@ -43,8 +42,9 @@ public class MainActivity extends AppCompatActivity implements
 
         // SupportFragmentManager для фрагментов из библиотеки support
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, calcFragment).commit();
-    }
 
+
+    }
 
     // метод отслеживающий нажатие кнопки назад
     // в данном случае закрывыет Drawer-меню если оно открыто

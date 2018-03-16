@@ -34,6 +34,14 @@ public class StatisticFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic, container, false);
 
+        initToolbar(view);
+        initRecyclerView(view);
+
+
+        return view;
+    }
+
+    private void initToolbar(View view) {
         // делает ActionBar активным (появляется системный текст),
         // но блокирует установку ручных титлов
         toolbar = view.findViewById(R.id.my_toolbar);
@@ -62,22 +70,18 @@ public class StatisticFragment extends Fragment {
         // в параметре android:layout_height (по умолчанию true)
 //        collapsingToolbarLayout.setTitleEnabled(false);
 //        alwaysToolbar();
-
-        initRecyclerView(view);
-
-        return view;
     }
 
     private void initRecyclerView(View view) {
         List<CustModelCard> custModelCardsList = new ArrayList<CustModelCard>();
         int imgID;
         for (int i = 1; i <= 100; i++) {
-            if (i%2 == 0){
+            if (i % 2 == 0) {
                 imgID = R.drawable.ic_menu_send;
-            }else{
+            } else {
                 imgID = R.drawable.ic_menu_gallery;
             }
-            custModelCardsList.add(new CustModelCard("Title "+i, "Description "+i, imgID));
+            custModelCardsList.add(new CustModelCard("Title " + i, "Description " + i, imgID));
         }
 
         recyclerView = view.findViewById(R.id.my_recycler_view);

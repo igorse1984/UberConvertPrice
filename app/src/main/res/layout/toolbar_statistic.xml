@@ -3,24 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/app_bar"
     android:layout_width="match_parent"
-    android:layout_height="110dp"
+    android:layout_height="210dp"
+    android:fitsSystemWindows="true"
     android:theme="@style/AppTheme.AppBarOverlay">
+
+
+    <!--&lt;!&ndash;app:layout_scrollFlags="scroll|exitUntilCollapsed">&ndash;&gt;-->
+    <!--scroll - картинка будет уходить за границы экрана вместе с прокруткой-->
+    <!--exitUntilCollapsed - будет оставаться тулбар при прокрутке-->
 
     <android.support.design.widget.CollapsingToolbarLayout
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:contentScrim="?attr/colorPrimary"
-        app:layout_scrollFlags="scroll">
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+        <!--app:layout_collapseMode="parallax"-->
+        <!--2 варианта:-->
+        <!--pin - картинка сдвигается вместе с прокруткой списек-->
+        <!--parallax - картинка стоит на месте, съедается эффектом параллакса-->
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:scaleType="centerCrop"
+            app:layout_collapseMode="parallax"
+            app:srcCompat="@mipmap/lamp" />
 
         <!--волшебный флаг заставляющий тулбар двигаться при прокрутке без CollapsingToolbarLayout!-->
         <!--app:layout_scrollFlags="scroll"-->
+
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/transparent"
+            app:layout_collapseMode="pin"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
     </android.support.design.widget.CollapsingToolbarLayout>
+
 </android.support.design.widget.AppBarLayout>
 

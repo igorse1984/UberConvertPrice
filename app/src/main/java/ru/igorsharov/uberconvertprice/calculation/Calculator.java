@@ -32,7 +32,7 @@ abstract public class Calculator {
 
 
     // сбор данных из stateBox перед расчетом
-    void getData() {
+    protected void getData() {
         // дефолтим коэффициенты для исключения ошибок в рассчетах
         ratio = 1;
         // достаем данные для расчета из коробки
@@ -54,7 +54,7 @@ abstract public class Calculator {
         return getCost()
                 * uberComission
                 * (stateBox.getChBoxGarantpikState() ? ratio : 1)
-                * (1 - (stateBox.getPathnerComission() / 100));
+                * (1 - (stateBox.getPatnerComission() / 100));
     }
 
     public String getTitle() {

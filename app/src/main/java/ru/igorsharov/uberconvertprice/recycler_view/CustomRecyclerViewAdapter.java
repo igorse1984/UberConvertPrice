@@ -1,4 +1,4 @@
-package ru.igorsharov.uberconvertprice;
+package ru.igorsharov.uberconvertprice.recycler_view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,20 +9,23 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ru.igorsharov.uberconvertprice.R;
+
 /**
  * Created by Игорь on 14.03.2018.
  */
 
-public class CustRVAdapter extends RecyclerView.Adapter<CustRVAdapter.CardViewHolder> {
+public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.CardViewHolder> {
+
     private List<CustModelCard> mListCard;
 
-    public CustRVAdapter(List<CustModelCard> listCard) {
+    public CustomRecyclerViewAdapter(List<CustModelCard> listCard) {
         mListCard = listCard;
     }
 
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, null);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent,false);
         return new CardViewHolder(v);
     }
 

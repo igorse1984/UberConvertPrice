@@ -1,4 +1,4 @@
-package ru.igorsharov.uberconvertprice;
+package ru.igorsharov.uberconvertprice.fragments;
 
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -16,8 +16,13 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.igorsharov.uberconvertprice.recycler_view.CustModelCard;
+import ru.igorsharov.uberconvertprice.recycler_view.CustomRecyclerViewAdapter;
+import ru.igorsharov.uberconvertprice.MainActivity;
+import ru.igorsharov.uberconvertprice.R;
 
-public class StatisticFragment extends Fragment {
+
+public class RideFragment extends Fragment {
 
     private Toolbar toolbar;
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -32,9 +37,9 @@ public class StatisticFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_statistic, container, false);
+        View view = inflater.inflate(R.layout.fragment_ride, container, false);
 
-        initToolbar(view);
+//        initToolbar(view);
         initRecyclerView(view);
 
 
@@ -47,7 +52,7 @@ public class StatisticFragment extends Fragment {
         toolbar = view.findViewById(R.id.my_toolbar);
 //        setSupportActionBar(toolbar);
 
-        toolbar.setTitle("Статистика поездок");
+//        toolbar.setTitle("test");
 
         DrawerLayout drawer = ((MainActivity) getActivity()).getDrawerLayout();
         // инициализация кнопки гамбургера на тулбаре
@@ -89,7 +94,7 @@ public class StatisticFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         // specify an adapter (see also next example)
-        adapter = new CustRVAdapter(custModelCardsList);
+        adapter = new CustomRecyclerViewAdapter(custModelCardsList);
         recyclerView.setAdapter(adapter);
 
     }

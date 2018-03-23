@@ -1,15 +1,14 @@
-package ru.igorsharov.uberconvertprice;
+package ru.igorsharov.uberconvertprice.fragments;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +21,12 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import ru.igorsharov.uberconvertprice.R;
+import ru.igorsharov.uberconvertprice.StateBox;
 import ru.igorsharov.uberconvertprice.calculation.TariffOne;
 import ru.igorsharov.uberconvertprice.calculation.TariffTwo;
 import ru.igorsharov.uberconvertprice.database.CalcDb;
+import ru.igorsharov.uberconvertprice.recycler_view.CustomEditText;
 
 /**
  * Created by Игорь on 07.03.2018.
@@ -44,7 +46,47 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     private LinearLayout oldPrice;
     private Button btnCls;
     private CustomEditText etParthnerCommission, etTime, etWay;
-    private Toolbar toolbar;
+    final String TAG = "@@@" + getClass().getName();
+
+//    private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+//            = new OnNavigationItemSelectedListener() {
+//
+//        @Override
+//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//            switch (item.getItemId()) {
+//                case R.id.navigation_home:
+//                    return true;
+//                case R.id.navigation_dashboard:
+//                    return true;
+//            }
+//            return false;
+//        }
+//    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+
+    }
 
     private void initView(View view) {
         oldPrice = view.findViewById(R.id.oldPrice);
@@ -71,39 +113,26 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Здесь будет реализовано добавление в БД", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                // добавление данных в БД
+                CalcDb.get(getActivity()).addCalc(tariffTwo);
+//                Snackbar.make(view, "Здесь будет реализовано добавление в БД", Snackbar.LENGTH_LONG).show();
+//                        .setAction("Action", null).show();
+                printSnackbar(view, "Добавлено в БД", Color.BLACK, R.color.colorYellow).show();
             }
         });
+
+//        BottomNavigationView navigation = view.findViewById(R.id.bnv);
+//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    private void initToolbar(View view) {
-        // делает ActionBar активным (появляется системный текст),
-        // но блокирует установку ручных титлов
-        toolbar = view.findViewById(R.id.my_toolbar);
-//        setSupportActionBar(toolbar);
-        toolbar.setTitle("Калькулятор");
-        DrawerLayout drawer = ((MainActivity) getActivity()).getDrawerLayout();
-        // инициализация кнопки гамбургера на тулбаре
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                getActivity(), drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
-        // вешаем слушателя на drawer
-        drawer.addDrawerListener(toggle);
-
-        // синхронизирует hamburger menu с drawer
-        // без данной строки кнопка гамбургер не появится
-        toggle.syncState();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_calc, container, false);
+        View view = inflater.inflate(R.layout.calculator, container, false);
         initView(view);
-        initToolbar(view);
 
         // для отслеживания в поле EditText километража свыше заданного
-        listenerHandler();
+        setListeners();
 
         // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
         stateBox = new StateBox();
@@ -113,6 +142,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         tariffTwo = new TariffTwo(stateBox);
 
         etParthnerCommission.setText(String.valueOf(tariffTwo.getParthnerComission()));
+        Log.d(TAG, "onCreateView: ");
         return view;
     }
 
@@ -122,22 +152,26 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view.getId() == R.id.buttonCalc) {
             stateBox.setData(getDataOfView(etWay), getDataOfView(etTime), getDataOfView(boostSpinner), getDataOfView(etParthnerCommission));
-            // добавление данных в БД
-            CalcDb.get(getActivity()).addCalc(tariffTwo);
+
             calculateAndSetResult();
-            printSnackbar(view, "Посчитано", R.color.colorGreen).show();
+            printSnackbar(view, "Посчитано", 0, R.color.colorGreen).show();
         } else {
-            printSnackbar(view, "Очищено", R.color.colorAccent).show();
+            printSnackbar(view, "Очищено", 0, R.color.colorAccent).show();
             clsView();
         }
     }
 
 
-    private Snackbar printSnackbar(View view, String msg, int color) {
+    private Snackbar printSnackbar(View view, String msg, int textColor, int backgroundColor) {
         Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
-        View snackBarView = snackbar.getView();
+        View snackbarView = snackbar.getView();
+
         //TODO не нравится способ получения контекста, да и под вопросом способ получения цвета из ресурсов
-        snackBarView.setBackgroundColor(ContextCompat.getColor(getActivity(), color));
+        if (textColor != 0) {
+            ((TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text)).setTextColor(textColor);
+        }
+        snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), backgroundColor));
+
         return snackbar;
     }
 
@@ -158,7 +192,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         view.setText("");
     }
 
-    private void listenerHandler() {
+    private void setListeners() {
         // слушаем поле EditText расстояние
         etWay.addTextChangedListener(new TextWatcher() {
             @Override

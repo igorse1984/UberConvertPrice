@@ -12,13 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
+import ru.igorsharov.uberconvertprice.fragments.CalcContainerFragment;
+import ru.igorsharov.uberconvertprice.fragments.StatFragment;
+
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawer;
 
-    CalcFragment calcFragment = new CalcFragment();
-    StatisticFragment statisticFragment = new StatisticFragment();
+    CalcContainerFragment calcContainerFragment = new CalcContainerFragment();
+    StatFragment statFragment = new StatFragment();
+
 
     // возвращает адрес DrawerLayout для фрагментов
     public DrawerLayout getDrawerLayout() {
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setCheckedItem(R.id.nav_calc);
 
         // SupportFragmentManager для фрагментов из библиотеки support
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, calcFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calcContainerFragment).commit();
 
 
     }
@@ -90,11 +94,11 @@ public class MainActivity extends AppCompatActivity implements
         // выбор фрагмента
         switch (id) {
             case R.id.nav_calc:
-                fragment = calcFragment;
+                fragment = calcContainerFragment;
                 hideKeyboard();
                 break;
             case R.id.nav_statistic:
-                fragment = statisticFragment;
+                fragment = statFragment;
                 hideKeyboard();
                 break;
         }

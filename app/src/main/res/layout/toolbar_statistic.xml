@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/app_bar"
     android:layout_width="match_parent"
-    android:layout_height="210dp"
+    android:layout_height="150dp"
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -33,20 +33,30 @@
             app:layout_collapseMode="parallax"
             app:srcCompat="@mipmap/lamp" />
 
-        <!--волшебный флаг заставляющий тулбар двигаться при прокрутке без CollapsingToolbarLayout!-->
-        <!--app:layout_scrollFlags="scroll"-->
 
+        <!--<android.support.design.widget.BottomNavigationView-->
+        <!--android:id="@+id/bnv"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:itemBackground="@color/cardview_dark_background"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <!--app:menu="@menu/navigation" />-->
 
+        <!--волшебный флаг заставляющий тулбар двигаться при прокрутке без CollapsingToolbarLayout!--><!--app:layout_scrollFlags="scroll"-->
+        <!--параметр pin - у тулбара будет отвечает за то, будет Бургер-меню находиться на месте или уезжать за переделы экрана -->
         <android.support.v7.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
             app:layout_collapseMode="pin"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="@string/statistic_toolbar_title" />
 
 
     </android.support.design.widget.CollapsingToolbarLayout>
+
+
 
 </android.support.design.widget.AppBarLayout>
 

@@ -1,4 +1,4 @@
-package ru.igorsharov.uberconvertprice;
+package ru.igorsharov.uberconvertprice.recycler_view;
 
 /**
  * Created by Игорь on 14.03.2018.

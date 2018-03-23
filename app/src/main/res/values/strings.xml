@@ -42,8 +42,14 @@
 
     </string-array>
 
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_main3">Main3Activity</string>
+    <string name="statistic_toolbar_title">Статистика</string>
+    <string name="tab_name_calc">Калькулятор</string>
+    <string name="tab_name_ride">Список поездок</string>
 </resources>

@@ -10,16 +10,15 @@ public class StateBox {
     private float distState;
     private float timeState;
     private float ratioState;
-    private float pathnerComission;
-
+    private float patnerComission;
 
 
     /* чекбоксы */
-    void setChBoxGarantpikState(boolean chBoxGarantpikState) {
+    public void setChBoxGarantpikState(boolean chBoxGarantpikState) {
         this.chBoxGarantpikState = chBoxGarantpikState;
     }
 
-    void setChBoxOblastState(boolean chBoxOblastState) {
+    public void setChBoxOblastState(boolean chBoxOblastState) {
         this.chBoxOblastState = chBoxOblastState;
     }
 
@@ -32,11 +31,11 @@ public class StateBox {
     }
 
     /* вводимые данные */
-    void setData(float dist, float time, float ratio, float pathnerComission) {
+    public void setData(float dist, float time, float ratio, float pathnerComission) {
         distState = dist;
         timeState = time;
         ratioState = ratio;
-        this.pathnerComission = pathnerComission;
+        this.patnerComission = pathnerComission;
     }
 
     public float getDist() {
@@ -51,7 +50,7 @@ public class StateBox {
         return ratioState;
     }
 
-    public float getPathnerComission() {
-        return pathnerComission;
+    public float getPatnerComission() {
+        return patnerComission;
     }
 }

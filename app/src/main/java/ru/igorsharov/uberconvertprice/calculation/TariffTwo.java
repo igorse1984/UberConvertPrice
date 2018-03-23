@@ -21,7 +21,7 @@ public class TariffTwo extends Calculator {
 
     // дополняем метод
     @Override
-    void getData() {
+    protected void getData() {
         super.getData();
         // задаем переменной значение чекбокса т.к. в тарифе используется подсчет с превышением
         over = stateBox.getChBoxOverState();

@@ -1,4 +1,4 @@
-package ru.igorsharov.uberconvertprice.recycler_view;
+package ru.igorsharov.uberconvertprice;
 
 import android.content.Context;
 import android.util.AttributeSet;

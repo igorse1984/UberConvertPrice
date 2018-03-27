@@ -17,9 +17,9 @@ import ru.igorsharov.uberconvertprice.R;
 
 public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.CardViewHolder> {
 
-    private List<CustModelCard> mListCard;
+    private List<CustomModelCard> mListCard;
 
-    public CustomRecyclerViewAdapter(List<CustModelCard> listCard) {
+    public CustomRecyclerViewAdapter(List<CustomModelCard> listCard) {
         mListCard = listCard;
     }
 
@@ -31,10 +31,10 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        CustModelCard currentCustModelCard = mListCard.get (position);
-        holder.tvTitle.setText(currentCustModelCard.getTitle());
-        holder.tvDescr.setText(currentCustModelCard.getDescr ());
-        holder.imgView.setImageResource(currentCustModelCard.getImgId());
+        CustomModelCard currentCustomModelCard = mListCard.get (position);
+        holder.tvTitle.setText(currentCustomModelCard.getTitle());
+        holder.tvDescr.setText(currentCustomModelCard.getDescr ());
+        holder.imgView.setImageResource(currentCustomModelCard.getImgId());
     }
 
     @Override
@@ -54,4 +54,5 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             tvDescr = view.findViewById(R.id.tvDescr);
         }
     }
+
 }

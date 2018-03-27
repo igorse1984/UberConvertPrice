@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity implements
 
     DrawerLayout drawer;
 
-    CalcContainerFragment calcContainerFragment = new CalcContainerFragment();
-    StatFragment statFragment = new StatFragment();
+    CalcContainerFragment calcContainerFragment;
+    StatFragment statFragment;
 
 
     // возвращает адрес DrawerLayout для фрагментов
@@ -33,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // инициализация фрагментов
+        calcContainerFragment = CalcContainerFragment.newInstance(null);
+        statFragment = StatFragment.newInstance(null);
 
         // нахоим родительский DrawerLayout для последующего использования в тулбарах фрагментов
         drawer = findViewById(R.id.drawer_layout);

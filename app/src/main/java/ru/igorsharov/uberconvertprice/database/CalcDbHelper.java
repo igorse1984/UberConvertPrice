@@ -2,7 +2,6 @@ package ru.igorsharov.uberconvertprice.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import ru.igorsharov.uberconvertprice.database.CalcDbSchema.CalcTable;
 
@@ -10,7 +9,7 @@ import ru.igorsharov.uberconvertprice.database.CalcDbSchema.CalcTable;
  * Created by IgorSE on 15.02.2018.
  */
 
-public class CalcDbHelper extends SQLiteOpenHelper {
+public class CalcDbHelper extends DbHelper {
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "calcBase.db";
 

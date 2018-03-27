@@ -25,72 +25,113 @@ import ru.igorsharov.uberconvertprice.R;
 public class CalcContainerFragment extends Fragment {
 
     private Toolbar toolbar;
-    CalcFragment calcFragment = new CalcFragment();
-    RideFragment rideFragment = new RideFragment();
+    CalcFragment calcFragment;
+    RideFragment rideFragment;
     final String NAME_FRAGMENT = "Рассчет поездок";
     final String TAG = "@@@" + getClass().getName();
+    TabLayout tabLayout;
 
+    private static final String BUNDLE_CONTENT = "bundle_content";
+    private static final Bundle arguments = new Bundle();
 
+    public static CalcContainerFragment newInstance(final String content) {
+        final CalcContainerFragment fragment = new CalcContainerFragment();
+        arguments.putString(BUNDLE_CONTENT, content);
+        fragment.setArguments(arguments);
+        Log.d("@@@", "newInstance: ");
+        return fragment;
+    }
+
+    private int content;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() == null && !getArguments().containsKey(BUNDLE_CONTENT)) {
+            throw new IllegalArgumentException("Must be created through newInstance(...)");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_calculation, container, false);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        initView(view);
-        initToolbar(view);
         Log.d(TAG, "onCreateView: ");
-        ft.replace(R.id.sub_container, calcFragment).commit();
+        View view = inflater.inflate(R.layout.fragment_calculation, container, false);
+        calcFragment = CalcFragment.newInstance(null);
+        rideFragment = RideFragment.newInstance(null);
+        initTabs(view);
+        initToolbar(view);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart: ");
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_CONTENT)) {
+            content = getArguments().getInt(BUNDLE_CONTENT);
+            Log.d(TAG, "onStart: content = " + content);
+        }
+        changeFragmentOfTabPosition();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         Log.d(TAG, "onResume: ");
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
         Log.d(TAG, "onPause: ");
-        // чтобы при повторном попаданиии на фрагмент он не был пустым
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.remove(calcFragment).commit();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: ");
+        arguments.putInt(BUNDLE_CONTENT, tabLayout.getSelectedTabPosition());
+        Log.d(TAG, "onStop: content = " + tabLayout.getSelectedTabPosition());
     }
 
-    private void initView(View view) {
-        // табы
-        final TabLayout tabLayout = view.findViewById(R.id.tabs);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
+
+    private void changeFragmentOfTabPosition() {
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        int tabSelect;
+
+        if (content != 0) {
+            tabSelect = content;
+            content = 0;
+            TabLayout.Tab tab = tabLayout.getTabAt(tabSelect);
+            if (tab != null)
+                tab.select();
+        } else {
+            tabSelect = tabLayout.getSelectedTabPosition();
+        }
+
+        if (tabSelect == 0) {
+            ft.replace(R.id.sub_container, calcFragment);
+        } else if (tabSelect == 1) {
+            hideKeyboard();
+            ft.replace(R.id.sub_container, rideFragment);
+        }
+        ft.commit();
+    }
+
+    private void initTabs(View view) {
+        // находим табы
+        tabLayout = view.findViewById(R.id.tabs);
         // слушатель нажатий на табы
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                if (tabLayout.getSelectedTabPosition() == 0) {
-                    ft.replace(R.id.sub_container, calcFragment);
-                } else if (tabLayout.getSelectedTabPosition() == 1) {
-                    hideKeyboard();
-                    ft.replace(R.id.sub_container, rideFragment);
-                }
-                ft.commit();
+                changeFragmentOfTabPosition();
+                Log.d(TAG, "onTabSelected = " + tabLayout.getSelectedTabPosition());
             }
 
             @Override

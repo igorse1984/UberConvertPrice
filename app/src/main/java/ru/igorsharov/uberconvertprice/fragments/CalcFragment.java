@@ -2,6 +2,7 @@ package ru.igorsharov.uberconvertprice.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -26,7 +27,7 @@ import ru.igorsharov.uberconvertprice.StateBox;
 import ru.igorsharov.uberconvertprice.calculation.TariffOne;
 import ru.igorsharov.uberconvertprice.calculation.TariffTwo;
 import ru.igorsharov.uberconvertprice.database.CalcDb;
-import ru.igorsharov.uberconvertprice.recycler_view.CustomEditText;
+import ru.igorsharov.uberconvertprice.CustomEditText;
 
 /**
  * Created by Игорь on 07.03.2018.
@@ -47,21 +48,29 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     private Button btnCls;
     private CustomEditText etParthnerCommission, etTime, etWay;
     final String TAG = "@@@" + getClass().getName();
+    private static final String BUNDLE_CONTENT = "bundle_content";
 
-//    private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-//            = new OnNavigationItemSelectedListener() {
-//
-//        @Override
-//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//            switch (item.getItemId()) {
-//                case R.id.navigation_home:
-//                    return true;
-//                case R.id.navigation_dashboard:
-//                    return true;
-//            }
-//            return false;
-//        }
-//    };
+
+    public static CalcFragment newInstance(final String content) {
+        final CalcFragment fragment = new CalcFragment();
+        final Bundle arguments = new Bundle();
+        arguments.putString(BUNDLE_CONTENT, content);
+        fragment.setArguments(arguments);
+        Log.d("@@@", "CalcFragment newInstance");
+        return fragment;
+    }
+
+    private String content;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_CONTENT)) {
+            content = getArguments().getString(BUNDLE_CONTENT);
+        } else {
+            throw new IllegalArgumentException("Must be created through newInstance(...)");
+        }
+    }
 
     @Override
     public void onStart() {
@@ -86,6 +95,12 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         super.onStop();
         Log.d(TAG, "onStop: ");
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
     }
 
     private void initView(View view) {
@@ -115,14 +130,9 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
             public void onClick(View view) {
                 // добавление данных в БД
                 CalcDb.get(getActivity()).addCalc(tariffTwo);
-//                Snackbar.make(view, "Здесь будет реализовано добавление в БД", Snackbar.LENGTH_LONG).show();
-//                        .setAction("Action", null).show();
                 printSnackbar(view, "Добавлено в БД", Color.BLACK, R.color.colorYellow).show();
             }
         });
-
-//        BottomNavigationView navigation = view.findViewById(R.id.bnv);
-//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
 

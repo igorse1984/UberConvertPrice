@@ -38,7 +38,7 @@
                 android:layout_weight="1"
                 app:hintTextAppearance="@style/EditTextHintStyleOne">
 
-                <ru.igorsharov.uberconvertprice.recycler_view.CustomEditText
+                <ru.igorsharov.uberconvertprice.CustomEditText
                     android:id="@+id/editTextPrthnerCommisson"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                 android:layout_weight="1"
                 app:hintTextAppearance="@style/EditTextHintStyleOne">
 
-                <ru.igorsharov.uberconvertprice.recycler_view.CustomEditText
+                <ru.igorsharov.uberconvertprice.CustomEditText
                     android:id="@+id/editTextTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
                 android:layout_weight="1"
                 app:hintTextAppearance="@style/EditTextHintStyleTwo">
 
-                <ru.igorsharov.uberconvertprice.recycler_view.CustomEditText
+                <ru.igorsharov.uberconvertprice.CustomEditText
                     android:id="@+id/editTextWay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -52,4 +52,8 @@
     <string name="statistic_toolbar_title">Статистика</string>
     <string name="tab_name_calc">Калькулятор</string>
     <string name="tab_name_ride">Список поездок</string>
+    <string name="snackbar_msg_add_to_llist">Добавлено в список поездок</string>
+    <string name="snackbar_msg_calculate">Посчитано</string>
+    <string name="snackbar_msg_cls">Очищено</string>
+    <string name="rub_name">руб.</string>
 </resources>

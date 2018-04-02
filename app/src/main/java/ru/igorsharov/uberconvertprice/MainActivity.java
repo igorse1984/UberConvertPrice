@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // инициализация фрагментов
-        calcContainerFragment = CalcContainerFragment.newInstance(null);
+        calcContainerFragment = CalcContainerFragment.newInstance(0);
         statFragment = StatFragment.newInstance(null);
 
         // нахоим родительский DrawerLayout для последующего использования в тулбарах фрагментов

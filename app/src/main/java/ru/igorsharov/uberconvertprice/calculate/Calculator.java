@@ -1,6 +1,6 @@
-package ru.igorsharov.uberconvertprice.calculation;
+package ru.igorsharov.uberconvertprice.calculate;
 
-import ru.igorsharov.uberconvertprice.StateBox;
+import ru.igorsharov.uberconvertprice.presenters.StateBox;
 
 /**
  * Created by IgorSE on 13.02.2018.
@@ -15,12 +15,12 @@ abstract public class Calculator {
 
     /* основные переменные прайса, инициализируются в наследниках */
     float distPrice; // за 1 км
-    float kmOver; // километраж свыше которого будет изменена стоимость км
+    protected float kmOver; // километраж свыше которого будет изменена стоимость км
     float distPriceOver; // за 1 км (свыше кол-ва км)
     float timePrice; // за 1 мин
     float supplyCarPrice; // за подачу автомобиля
     private float uberComission = 0.8f; // комиссия убера
-    private float parthnerComission = 5f; // комиссия партнера
+    private float partnerComission = 5f; // комиссия партнера
 
     // коробка с входными значениями для расчета
     StateBox stateBox;
@@ -65,11 +65,11 @@ abstract public class Calculator {
         return ratio;
     }
 
-    public float getParthnerComission() {
-        return parthnerComission;
+    public float getPartnerComission() {
+        return partnerComission;
     }
 
-    public float getKmOver() {
+    float getKmOver() {
         return kmOver;
 
     }

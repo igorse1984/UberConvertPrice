@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="snackbar_msg_add_to_llist">Добавлено в список поездок</string>
+    <string name="snackbar_msg_calculate">Посчитано</string>
+    <string name="snackbar_msg_cls">Очищено</string>
+    <string name="rub_name">руб.</string>
+</resources>

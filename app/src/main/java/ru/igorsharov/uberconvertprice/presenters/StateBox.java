@@ -1,4 +1,4 @@
-package ru.igorsharov.uberconvertprice;
+package ru.igorsharov.uberconvertprice.presenters;
 
 /**
  * Created by IgorSE on 14.02.2018.
@@ -26,7 +26,7 @@ public class StateBox {
         return chBoxGarantpikState;
     }
 
-    public boolean getChBoxOverState() {
+   public boolean getChBoxOverState() {
         return chBoxOblastState;
     }
 
@@ -46,7 +46,7 @@ public class StateBox {
         return timeState;
     }
 
-    public float getRatio() {
+   public float getRatio() {
         return ratioState;
     }
 

@@ -34,15 +34,14 @@ public class CalcContainerFragment extends Fragment {
     private static final String BUNDLE_CONTENT = "bundle_content";
     private static final Bundle arguments = new Bundle();
 
-    public static CalcContainerFragment newInstance(final String content) {
+    public static CalcContainerFragment newInstance(final int fragmentNum) {
         final CalcContainerFragment fragment = new CalcContainerFragment();
-        arguments.putString(BUNDLE_CONTENT, content);
+        arguments.putInt(BUNDLE_CONTENT, fragmentNum);
         fragment.setArguments(arguments);
         Log.d("@@@", "newInstance: ");
         return fragment;
     }
 
-    private int content;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,30 +62,40 @@ public class CalcContainerFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Возвращение состояния выбраного таба
+     */
     @Override
     public void onStart() {
         super.onStart();
-        if (getArguments() != null && getArguments().containsKey(BUNDLE_CONTENT)) {
-            content = getArguments().getInt(BUNDLE_CONTENT);
-            Log.d(TAG, "onStart: content = " + content);
-        }
-        changeFragmentOfTabPosition();
+
+        int savedTabsState = getArguments().getInt(BUNDLE_CONTENT);
+        Log.d(TAG, "onStart: savedTabsState = " + savedTabsState);
+
+        // т.к. работа с табами организована напрямую в обход ViewPager,
+        // применяем данный код получения нужного таба
+        TabLayout.Tab tab = tabLayout.getTabAt(savedTabsState);
+        if (tab != null)
+            tab.select();
+
+        changeFragmentOnTabPosition(savedTabsState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         Log.d(TAG, "onResume: ");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
         Log.d(TAG, "onPause: ");
     }
 
+    /**
+     * Сохранение текущего состояния выбора таба
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -100,19 +109,12 @@ public class CalcContainerFragment extends Fragment {
         Log.d(TAG, "onDestroy: ");
     }
 
-    private void changeFragmentOfTabPosition() {
+    /**
+     * Вызывается для смены фрагмента в зависимости от выбранного таба
+     */
+    private void changeFragmentOnTabPosition(int tabSelect) {
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        int tabSelect;
 
-        if (content != 0) {
-            tabSelect = content;
-            content = 0;
-            TabLayout.Tab tab = tabLayout.getTabAt(tabSelect);
-            if (tab != null)
-                tab.select();
-        } else {
-            tabSelect = tabLayout.getSelectedTabPosition();
-        }
 
         if (tabSelect == 0) {
             ft.replace(R.id.sub_container, calcFragment);
@@ -130,7 +132,7 @@ public class CalcContainerFragment extends Fragment {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                changeFragmentOfTabPosition();
+                changeFragmentOnTabPosition(tabLayout.getSelectedTabPosition());
                 Log.d(TAG, "onTabSelected = " + tabLayout.getSelectedTabPosition());
             }
 
@@ -147,10 +149,7 @@ public class CalcContainerFragment extends Fragment {
     }
 
     private void initToolbar(View view) {
-        // делает ActionBar активным (появляется системный текст),
-        // но блокирует установку ручных титлов
         toolbar = view.findViewById(R.id.my_toolbar);
-//        setSupportActionBar(toolbar);
         toolbar.setTitle(NAME_FRAGMENT);
         DrawerLayout drawer = ((MainActivity) getActivity()).getDrawerLayout();
         // инициализация кнопки гамбургера на тулбаре

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.lang.ref.WeakReference;
 
-import ru.igorsharov.uberconvertprice.calculation.Calculator;
+import ru.igorsharov.uberconvertprice.calculate.Calculator;
 import ru.igorsharov.uberconvertprice.database.CalcDbSchema.CalcTable;
 
 /**

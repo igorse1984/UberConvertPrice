@@ -22,22 +22,15 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import ru.igorsharov.uberconvertprice.R;
-import ru.igorsharov.uberconvertprice.StateBox;
-import ru.igorsharov.uberconvertprice.calculation.TariffOne;
-import ru.igorsharov.uberconvertprice.calculation.TariffTwo;
-import ru.igorsharov.uberconvertprice.database.CalcDb;
 import ru.igorsharov.uberconvertprice.CustomEditText;
+import ru.igorsharov.uberconvertprice.R;
+import ru.igorsharov.uberconvertprice.presenters.CalcPresenter;
 
 /**
  * Created by Игорь on 07.03.2018.
  */
 
 public class CalcFragment extends Fragment implements View.OnClickListener {
-
-    private StateBox stateBox;
-    private TariffTwo tariffTwo;
-    private TariffOne tariffOne;
 
     private TextView tvResultOfNewPrice, tvResultOfOldPrice;
     private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
@@ -49,7 +42,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     private CustomEditText etParthnerCommission, etTime, etWay;
     final String TAG = "@@@" + getClass().getName();
     private static final String BUNDLE_CONTENT = "bundle_content";
-
+    private CalcPresenter calcPresenter;
 
     public static CalcFragment newInstance(final String content) {
         final CalcFragment fragment = new CalcFragment();
@@ -65,11 +58,14 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // заготовка инициализации аргументов фрагмента, пока не используется
         if (getArguments() != null && getArguments().containsKey(BUNDLE_CONTENT)) {
             content = getArguments().getString(BUNDLE_CONTENT);
         } else {
             throw new IllegalArgumentException("Must be created through newInstance(...)");
         }
+        calcPresenter = new CalcPresenter(this);
     }
 
     @Override
@@ -103,6 +99,46 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, "onDestroy: ");
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.calculator, container, false);
+        initView(view);
+
+        // для отслеживания в поле EditText километража свыше заданного
+        setListeners();
+
+        // отображение дефолтной комиссии из тарифа
+        etParthnerCommission.setText(String.valueOf(calcPresenter.getPartnerComission()));
+
+        Log.d(TAG, "onCreateView: ");
+        return view;
+    }
+
+
+    // выполнение расчета по нажатию кнопки
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.buttonCalc:
+                // сбор данных с View и передача в презентер
+                CalcPresenter.getStateBox().setData(
+                        getFloatOfView(etWay),
+                        getFloatOfView(etTime),
+                        getFloatOfView(boostSpinner),
+                        getFloatOfView(etParthnerCommission));
+                //            calculateAndSetResult();
+                calcPresenter.buttonClick(calcPresenter.BUTTON_CALC);
+                printSnackbar(view, getString(R.string.snackbar_msg_calculate), 0, R.color.colorGreen).show();
+                break;
+
+            case R.id.buttonClearEditText:
+                calcPresenter.buttonClick(calcPresenter.BUTTON_CLC);
+                printSnackbar(view, getString(R.string.snackbar_msg_cls), 0, R.color.colorAccent).show();
+                break;
+        }
+    }
+
     private void initView(View view) {
         oldPrice = view.findViewById(R.id.oldPrice);
         view.findViewById(R.id.buttonCalc).setOnClickListener(this);
@@ -125,50 +161,15 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
 
         // TODO переделать на добавление расчета в БД
         FloatingActionButton fab = view.findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // добавление данных в БД
-                CalcDb.get(getActivity()).addCalc(tariffTwo);
-                printSnackbar(view, "Добавлено в БД", Color.BLACK, R.color.colorYellow).show();
+                calcPresenter.addToDb(getActivity());
+                printSnackbar(view, getString(R.string.snackbar_msg_add_to_llist), Color.BLACK, R.color.colorYellow).show();
             }
         });
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.calculator, container, false);
-        initView(view);
-
-        // для отслеживания в поле EditText километража свыше заданного
-        setListeners();
-
-        // инициализируем хранилище состояний чекбоксов и вводимых данных из активити
-        stateBox = new StateBox();
-
-        // инициализируем тарифы
-        tariffOne = new TariffOne(stateBox);
-        tariffTwo = new TariffTwo(stateBox);
-
-        etParthnerCommission.setText(String.valueOf(tariffTwo.getParthnerComission()));
-        Log.d(TAG, "onCreateView: ");
-        return view;
-    }
-
-
-    // выполнение расчета по нажатию кнопки
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.buttonCalc) {
-            stateBox.setData(getDataOfView(etWay), getDataOfView(etTime), getDataOfView(boostSpinner), getDataOfView(etParthnerCommission));
-
-            calculateAndSetResult();
-            printSnackbar(view, "Посчитано", 0, R.color.colorGreen).show();
-        } else {
-            printSnackbar(view, "Очищено", 0, R.color.colorAccent).show();
-            clsView();
-        }
     }
 
 
@@ -185,7 +186,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         return snackbar;
     }
 
-    private void clsView() {
+    public void clsView() {
         // очистка полей ввода
         clearViewText(etTime);
         clearViewText(etWay);
@@ -216,12 +217,14 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (getDataOfView(etWay) > tariffTwo.getKmOver()) {
-                    chBoxOblast.setVisibility(View.VISIBLE);
-                } else {
-                    chBoxOblast.setChecked(false);
-                    chBoxOblast.setVisibility(View.GONE);
-                }
+
+                // отображение чекбокса увеличения цены превышенного километража по тарифу
+//                if (getFloatOfView(etWay) > tariffTwo.getKmOver()) {
+//                    chBoxOblast.setVisibility(View.VISIBLE);
+//                } else {
+//                    chBoxOblast.setChecked(false);
+//                    chBoxOblast.setVisibility(View.GONE);
+//                }
 
                 // отслеживание пустотности EditText
                 if (String.valueOf(etWay.getText()).equals("") && String.valueOf(etTime.getText()).equals(""))
@@ -270,19 +273,18 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        // TODO оптимизировать чекбоксы, сделать имплемент интерфейса и свитч
         // слушаем чекбоксы
         chBoxOblast.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                stateBox.setChBoxOblastState(b);
+                CalcPresenter.getStateBox().setChBoxOblastState(b);
             }
         });
 
         chBoxGarantpik.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                stateBox.setChBoxGarantpikState(b);
+                CalcPresenter.getStateBox().setChBoxGarantpikState(b);
             }
         });
 
@@ -298,7 +300,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
 
 
     // общий метод получения данных из полей ввода
-    private float getDataOfView(View v) {
+    private float getFloatOfView(View v) {
         if (v instanceof TextView) {
             TextView tv = (TextView) v;
             if (!tv.getText().toString().equals("")) {
@@ -312,16 +314,16 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private void calculateAndSetResult() {
-        setResults(tvResultOfNewPrice, tariffTwo.getCost());
-        setResults(tvResultOfNewPrice1, tariffTwo.getProfit());
-        setResults(tvResultOfOldPrice, tariffOne.getCost());
-        setResults(tvResultOfOldPrice1, tariffOne.getProfit());
+    public void setResults(float costOne, float profitOne, float costTwo, float profitTwo) {
+        setResult(tvResultOfNewPrice, costTwo);
+        setResult(tvResultOfNewPrice1, profitTwo);
+        setResult(tvResultOfOldPrice, costOne);
+        setResult(tvResultOfOldPrice1, profitOne);
     }
 
 
-    private void setResults(TextView tv, float priceTotal) {
-        tv.setText(String.valueOf((int) priceTotal).concat(" руб."));
+    private void setResult(TextView tv, float priceTotal) {
+        tv.setText(String.valueOf((int) priceTotal).concat(getString(R.string.rub_name)));
     }
 
 }

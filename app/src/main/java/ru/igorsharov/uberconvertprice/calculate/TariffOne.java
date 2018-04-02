@@ -1,6 +1,6 @@
-package ru.igorsharov.uberconvertprice.calculation;
+package ru.igorsharov.uberconvertprice.calculate;
 
-import ru.igorsharov.uberconvertprice.StateBox;
+import ru.igorsharov.uberconvertprice.presenters.StateBox;
 
 /**
  * Created by IgorSE on 13.02.2018.

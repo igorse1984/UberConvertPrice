@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import ru.igorsharov.uberconvertprice.CalcFragmentInterface;
 import ru.igorsharov.uberconvertprice.CustomEditText;
 import ru.igorsharov.uberconvertprice.R;
 import ru.igorsharov.uberconvertprice.presenters.CalcPresenter;
@@ -30,7 +31,7 @@ import ru.igorsharov.uberconvertprice.presenters.CalcPresenter;
  * Created by Игорь on 07.03.2018.
  */
 
-public class CalcFragment extends Fragment implements View.OnClickListener {
+public class CalcFragment extends Fragment implements CalcFragmentInterface, View.OnClickListener {
 
     private TextView tvResultOfNewPrice, tvResultOfOldPrice;
     private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
@@ -121,7 +122,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.buttonCalc:
                 // сбор данных из View и передача их в презентер
-                CalcPresenter.getStateBox().setData(
+                calcPresenter.getStateBox().setData(
                         getFloatOfView(etWay),
                         getFloatOfView(etTime),
                         getFloatOfView(boostSpinner),
@@ -171,36 +172,6 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-
-    public void printSnackbar(View view, String msg, int textColor, int backgroundColor) {
-        Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
-        View snackbarView = snackbar.getView();
-
-        //TODO не нравится способ получения контекста, да и под вопросом способ получения цвета из ресурсов
-        if (textColor != 0) {
-            ((TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text)).setTextColor(textColor);
-        }
-        snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), backgroundColor));
-
-        snackbar.show();
-    }
-
-    public void clsView() {
-        // очистка полей ввода
-        clearViewText(etTime);
-        clearViewText(etWay);
-        clearViewText(tvResultOfOldPrice);
-        clearViewText(tvResultOfNewPrice);
-        clearViewText(tvResultOfOldPrice1);
-        clearViewText(tvResultOfNewPrice1);
-        etTime.requestFocus();
-        boostSpinner.setSelection(0);
-    }
-
-
-    private void clearViewText(TextView view) {
-        view.setText("");
-    }
 
     private void setListeners() {
         // слушаем поле EditText расстояние
@@ -271,14 +242,14 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         chBoxOblast.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                CalcPresenter.getStateBox().setChBoxOblastState(b);
+                calcPresenter.getStateBox().setChBoxOblastState(b);
             }
         });
 
         chBoxGarantpik.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                CalcPresenter.getStateBox().setChBoxGarantpikState(b);
+                calcPresenter.getStateBox().setChBoxGarantpikState(b);
             }
         });
 
@@ -307,7 +278,8 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         return 0;
     }
 
-
+    // отображение результатов рассчета
+    @Override
     public void setResults(float costOne, float profitOne, float costTwo, float profitTwo) {
         setResult(tvResultOfNewPrice, costTwo);
         setResult(tvResultOfNewPrice1, profitTwo);
@@ -321,6 +293,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     }
 
     // отображение чекбокса увеличения цены превышенного километража по тарифу
+    @Override
     public void setVisibilityChBoxOblast(boolean visibility) {
         if (visibility) {
             chBoxOblast.setVisibility(View.VISIBLE);
@@ -329,4 +302,37 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
             chBoxOblast.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public void clsView() {
+        // очистка полей ввода
+        clearViewText(etTime);
+        clearViewText(etWay);
+        clearViewText(tvResultOfOldPrice);
+        clearViewText(tvResultOfNewPrice);
+        clearViewText(tvResultOfOldPrice1);
+        clearViewText(tvResultOfNewPrice1);
+        etTime.requestFocus();
+        boostSpinner.setSelection(0);
+    }
+
+    private void clearViewText(TextView view) {
+        view.setText("");
+    }
+
+    @Override
+    public void printSnackbar(View view, String msg, int textColor, int backgroundColor) {
+        Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+
+        //TODO не нравится способ получения контекста, да и под вопросом способ получения цвета из ресурсов
+        if (textColor != 0) {
+            ((TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text)).setTextColor(textColor);
+        }
+        snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), backgroundColor));
+
+        snackbar.show();
+    }
+
+
 }

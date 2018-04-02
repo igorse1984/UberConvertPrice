@@ -120,7 +120,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
 
         switch (view.getId()) {
             case R.id.buttonCalc:
-                // сбор данных с View и передача в презентер
+                // сбор данных из View и передача их в презентер
                 CalcPresenter.getStateBox().setData(
                         getFloatOfView(etWay),
                         getFloatOfView(etTime),
@@ -128,12 +128,12 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
                         getFloatOfView(etParthnerCommission));
 
                 calcPresenter.buttonClick(calcPresenter.BUTTON_CALC);
-                printSnackbar(view, getString(R.string.snackbar_msg_calculate), 0, R.color.colorGreen).show();
+                calcPresenter.printSnackBar(view, getString(R.string.snackbar_msg_calculate), 0, R.color.colorGreen);
                 break;
 
             case R.id.buttonClearEditText:
                 calcPresenter.buttonClick(calcPresenter.BUTTON_CLC);
-                printSnackbar(view, getString(R.string.snackbar_msg_cls), 0, R.color.colorAccent).show();
+                calcPresenter.printSnackBar(view, getString(R.string.snackbar_msg_cls), 0, R.color.colorAccent);
                 break;
         }
     }
@@ -166,13 +166,13 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
             public void onClick(View view) {
                 // добавление данных в БД
                 calcPresenter.addToDb(getActivity());
-                printSnackbar(view, getString(R.string.snackbar_msg_add_to_llist), Color.BLACK, R.color.colorYellow).show();
+                calcPresenter.printSnackBar(view, getString(R.string.snackbar_msg_add_to_llist), Color.BLACK, R.color.colorYellow);
             }
         });
     }
 
 
-    private Snackbar printSnackbar(View view, String msg, int textColor, int backgroundColor) {
+    public void printSnackbar(View view, String msg, int textColor, int backgroundColor) {
         Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
         View snackbarView = snackbar.getView();
 
@@ -182,7 +182,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         }
         snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), backgroundColor));
 
-        return snackbar;
+        snackbar.show();
     }
 
     public void clsView() {
@@ -293,7 +293,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    // общий метод получения данных из полей ввода
+    // универсальный метод получения данных из полей ввода
     private float getFloatOfView(View v) {
         if (v instanceof TextView) {
             TextView tv = (TextView) v;

@@ -102,9 +102,8 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calculator, container, false);
-        initView(view);
 
-        // для отслеживания в поле EditText километража свыше заданного
+        initView(view);
         setListeners();
 
         // отображение дефолтной комиссии из тарифа
@@ -127,7 +126,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
                         getFloatOfView(etTime),
                         getFloatOfView(boostSpinner),
                         getFloatOfView(etParthnerCommission));
-                //            calculateAndSetResult();
+
                 calcPresenter.buttonClick(calcPresenter.BUTTON_CALC);
                 printSnackbar(view, getString(R.string.snackbar_msg_calculate), 0, R.color.colorGreen).show();
                 break;
@@ -218,13 +217,8 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable editable) {
 
-                // отображение чекбокса увеличения цены превышенного километража по тарифу
-//                if (getFloatOfView(etWay) > tariffTwo.getKmOver()) {
-//                    chBoxOblast.setVisibility(View.VISIBLE);
-//                } else {
-//                    chBoxOblast.setChecked(false);
-//                    chBoxOblast.setVisibility(View.GONE);
-//                }
+                // отслеживание превышения километража по тарифу
+                calcPresenter.changeChBoxOblastVisibility(getFloatOfView(etWay));
 
                 // отслеживание пустотности EditText
                 if (String.valueOf(etWay.getText()).equals("") && String.valueOf(etTime.getText()).equals(""))
@@ -326,4 +320,13 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         tv.setText(String.valueOf((int) priceTotal).concat(getString(R.string.rub_name)));
     }
 
+    // отображение чекбокса увеличения цены превышенного километража по тарифу
+    public void setVisibilityChBoxOblast(boolean visibility) {
+        if (visibility) {
+            chBoxOblast.setVisibility(View.VISIBLE);
+        } else {
+            chBoxOblast.setChecked(false);
+            chBoxOblast.setVisibility(View.GONE);
+        }
+    }
 }

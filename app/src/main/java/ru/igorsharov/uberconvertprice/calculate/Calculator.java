@@ -69,7 +69,7 @@ abstract public class Calculator {
         return partnerComission;
     }
 
-    float getKmOver() {
+    public float getKmOver() {
         return kmOver;
 
     }

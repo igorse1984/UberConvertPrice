@@ -22,6 +22,10 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import ru.igorsharov.uberconvertprice.CalcFragmentInterface;
 import ru.igorsharov.uberconvertprice.CustomEditText;
 import ru.igorsharov.uberconvertprice.R;
@@ -31,7 +35,7 @@ import ru.igorsharov.uberconvertprice.presenters.CalcPresenter;
  * Created by Игорь on 07.03.2018.
  */
 
-public class CalcFragment extends Fragment implements CalcFragmentInterface, View.OnClickListener {
+public class CalcFragment extends Fragment implements CalcFragmentInterface {
 
     private TextView tvResultOfNewPrice, tvResultOfOldPrice;
     private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
@@ -39,11 +43,15 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
     private CheckBox chBoxOblast, chBoxGarantpik;
     private Switch switchShowPrice;
     private LinearLayout oldPrice;
-    private Button btnCls;
     private CustomEditText etParthnerCommission, etTime, etWay;
     final String TAG = "@@@" + getClass().getName();
     private static final String BUNDLE_CONTENT = "bundle_content";
     private CalcPresenter calcPresenter;
+    private View view;
+
+    private Unbinder unbinder;
+    @BindView(R.id.buttonClearEditText)
+    Button btnCls;
 
     public static CalcFragment newInstance(final String content) {
         final CalcFragment fragment = new CalcFragment();
@@ -101,14 +109,22 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.calculator, container, false);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 
-        initView(view);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.calculator, container, false);
+
+        unbinder = ButterKnife.bind(this, view);
+
+        initView();
         setListeners();
 
         // отображение дефолтной комиссии из тарифа
-        etParthnerCommission.setText(String.valueOf(calcPresenter.getPartnerComission()));
+        calcPresenter.setDefaultPatnerCommission();
 
         Log.d(TAG, "onCreateView: ");
         return view;
@@ -116,33 +132,28 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
 
 
     // выполнение расчета по нажатию кнопки
-    @Override
-    public void onClick(View view) {
+    @OnClick(R.id.buttonCalc)
+    public void onClickButtonCalc() {
 
-        switch (view.getId()) {
-            case R.id.buttonCalc:
-                // сбор данных из View и передача их в презентер
-                calcPresenter.getStateBox().setData(
-                        getFloatOfView(etWay),
-                        getFloatOfView(etTime),
-                        getFloatOfView(boostSpinner),
-                        getFloatOfView(etParthnerCommission));
+        // сбор данных из View и передача их в презентер
+        calcPresenter.getStateBox().setData(
+                getFloatOfView(etWay),
+                getFloatOfView(etTime),
+                getFloatOfView(boostSpinner),
+                getFloatOfView(etParthnerCommission));
 
-                calcPresenter.buttonClick(calcPresenter.BUTTON_CALC);
-                calcPresenter.printSnackBar(view, getString(R.string.snackbar_msg_calculate), 0, R.color.colorGreen);
-                break;
-
-            case R.id.buttonClearEditText:
-                calcPresenter.buttonClick(calcPresenter.BUTTON_CLC);
-                calcPresenter.printSnackBar(view, getString(R.string.snackbar_msg_cls), 0, R.color.colorAccent);
-                break;
-        }
+        calcPresenter.buttonClick(calcPresenter.BUTTON_CALC);
+        calcPresenter.printSnackBar(getString(R.string.snackbar_msg_calculate), 0, R.color.colorGreen);
     }
 
-    private void initView(View view) {
+    @OnClick(R.id.buttonClearEditText)
+    public void onClickButtonCls() {
+        calcPresenter.buttonClick(calcPresenter.BUTTON_CLC);
+        calcPresenter.printSnackBar(getString(R.string.snackbar_msg_cls), 0, R.color.colorAccent);
+    }
+
+    private void initView() {
         oldPrice = view.findViewById(R.id.oldPrice);
-        view.findViewById(R.id.buttonCalc).setOnClickListener(this);
-        view.findViewById(R.id.buttonClearEditText).setOnClickListener(this);
         etTime = view.findViewById(R.id.editTextTime);
         etWay = view.findViewById(R.id.editTextWay);
         tvResultOfNewPrice = view.findViewById(R.id.textViewNewPrice);
@@ -167,7 +178,7 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
             public void onClick(View view) {
                 // добавление данных в БД
                 calcPresenter.addToDb(getActivity());
-                calcPresenter.printSnackBar(view, getString(R.string.snackbar_msg_add_to_llist), Color.BLACK, R.color.colorYellow);
+                calcPresenter.printSnackBar(getString(R.string.snackbar_msg_add_to_llist), Color.BLACK, R.color.colorYellow);
             }
         });
     }
@@ -182,20 +193,15 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
                 // отслеживание превышения километража по тарифу
                 calcPresenter.changeChBoxOblastVisibility(getFloatOfView(etWay));
 
                 // отслеживание пустотности EditText
-                if (String.valueOf(etWay.getText()).equals("") && String.valueOf(etTime.getText()).equals(""))
-                    btnCls.setVisibility(View.GONE);
-                else
-                    btnCls.setVisibility(View.VISIBLE);
+                checkEmptyEditText();
             }
         });
 
@@ -207,18 +213,15 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 // отслеживание пустотности EditText
-                if (String.valueOf(etWay.getText()).equals("") && String.valueOf(etTime.getText()).equals(""))
-                    btnCls.setVisibility(View.GONE);
-                else
-                    btnCls.setVisibility(View.VISIBLE);
+                checkEmptyEditText();
             }
         });
+
 
         // слушаем spinner
         boostSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -234,7 +237,6 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
@@ -257,12 +259,16 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
         switchShowPrice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                // TODO убрать доп поля, нужно менять отображение в пределах одного поля
                 oldPrice.setVisibility(b ? View.VISIBLE : View.GONE);
             }
         });
 
     }
 
+    private void checkEmptyEditText() {
+        calcPresenter.checkEmptyView(String.valueOf(etWay.getText()), String.valueOf(etTime.getText()));
+    }
 
     // универсальный метод получения данных из полей ввода
     private float getFloatOfView(View v) {
@@ -321,7 +327,7 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
     }
 
     @Override
-    public void printSnackbar(View view, String msg, int textColor, int backgroundColor) {
+    public void printSnackbar(String msg, int textColor, int backgroundColor) {
         Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
         View snackbarView = snackbar.getView();
 
@@ -332,6 +338,20 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface, Vie
         snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), backgroundColor));
 
         snackbar.show();
+    }
+
+    @Override
+    public void setVisibilityBtnCls(boolean flag) {
+        if (flag) {
+            btnCls.setVisibility(View.GONE);
+        } else {
+            btnCls.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void setDefaultPartnerCommission(String partnerCommission) {
+        etParthnerCommission.setText(partnerCommission);
     }
 
 

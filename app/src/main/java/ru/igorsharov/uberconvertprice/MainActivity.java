@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
+import butterknife.ButterKnife;
 import ru.igorsharov.uberconvertprice.fragments.CalcContainerFragment;
 import ru.igorsharov.uberconvertprice.fragments.StatFragment;
 

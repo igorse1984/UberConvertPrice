@@ -1,12 +1,10 @@
-package ru.igorsharov.uberconvertprice.calculate;
-
-import ru.igorsharov.uberconvertprice.presenters.StateBox;
+package ru.igorsharov.uberconvertprice.model;
 
 /**
  * Created by IgorSE on 13.02.2018.
  */
 
-public class TariffOne extends Calculator {
+public class TariffOne extends UberCalculator {
 
     public TariffOne(StateBox stateBox) {
         super(stateBox);

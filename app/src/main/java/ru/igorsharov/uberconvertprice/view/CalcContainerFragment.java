@@ -1,4 +1,4 @@
-package ru.igorsharov.uberconvertprice.fragments;
+package ru.igorsharov.uberconvertprice.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -148,6 +148,7 @@ public class CalcContainerFragment extends Fragment {
         });
     }
 
+    // TODO правильнее бы было реализовать данный метод в Активити
     private void initToolbar(View view) {
         toolbar = view.findViewById(R.id.my_toolbar);
         toolbar.setTitle(NAME_FRAGMENT);

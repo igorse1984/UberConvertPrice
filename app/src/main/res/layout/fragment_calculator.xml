@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:grid="http://schemas.android.com/tools"
     android:id="@+id/sub_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,12 +14,6 @@
         android:layout_margin="5dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/descPrice" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,21 +23,24 @@
                 android:id="@+id/switch2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:text="старый тариф" />
+                android:text="Переключатель тарифа" />
 
-            <!--TextInputLayout в данном сулчае для того чтобы hint стал анимированным-->
+            <!--TextInputLayout в данном случае для того чтобы hint стал анимированным-->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 app:hintTextAppearance="@style/EditTextHintStyleOne">
 
                 <ru.igorsharov.uberconvertprice.CustomEditText
                     android:id="@+id/editTextPrthnerCommisson"
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:cursorVisible="false"
                     android:ellipsize="end"
                     android:focusableInTouchMode="true"
@@ -56,97 +54,183 @@
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <Button
+                android:id="@+id/buttonClearEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.6" />
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="4"
+                android:text="@string/clearBtn"
+                android:visibility="gone" />
 
-            <TextView
+            <Button
+                android:id="@+id/buttonCalc"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/desc_total_price" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/desc_price" />
+                android:text="@string/calculate" />
         </LinearLayout>
 
-        <LinearLayout
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/gridLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp">
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            app:columnCount="2">
 
             <TextView
-                android:id="@+id/textView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.6"
-                android:text="@string/descNewPrice" />
+                android:id="@+id/tvAttentionCarSharing"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:text="Внимание! Стоимость поездки близка к стоимости каршеринга!"
+                android:textColor="@color/colorRed"
+                android:visibility="gone"
+                app:layout_columnSpan="2"
+                app:layout_columnWeight="2"
+                app:layout_gravity="fill" />
 
             <TextView
-                android:id="@+id/textViewNewPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:text="@string/column_name_tariff"
+                app:layout_columnWeight="2"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:id="@+id/tvTariffName"
                 android:gravity="center"
-                android:textSize="@dimen/sizeTextPrice" />
+                android:paddingBottom="10dp"
+                android:text="@string/descTvPrice"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill" />
+
 
             <TextView
-                android:id="@+id/textViewNewPrice1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/desc_total_price"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:id="@+id/tvResultCost"
                 android:gravity="center"
-                android:textSize="@dimen/sizeTextPrice" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/oldPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:visibility="gone">
+                android:textSize="@dimen/sizeTextPrice"
+                app:layout_gravity="fill" />
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.6"
-                android:text="@string/descOldPrice" />
+                android:id="@+id/tvDescHighPrice"
+                android:gravity="center_vertical"
+                android:text="@string/descHighPrice"
+                android:visibility="gone"
+                app:layout_gravity="fill" />
 
             <TextView
-                android:id="@+id/textViewOldPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:id="@+id/tvResultHighPrice"
                 android:gravity="center"
-                android:textColor="@color/colorGray"
-                android:textSize="@dimen/sizeTextPrice" />
+                android:textSize="@dimen/sizeTextPrice"
+                android:visibility="gone"
+                app:layout_gravity="fill" />
+
+            <!--черта-->
+            <TextView
+                android:id="@+id/tvDescLineClientCost"
+                android:layout_width="80dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:visibility="gone"
+                app:layout_column="1"
+                app:layout_gravity="center" />
+
+            <!--<TextView-->
+            <!--android:id="@+id/tvDescClientCost"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="Итого пассажирские"-->
+            <!--android:visibility="gone"-->
+            <!--app:layout_gravity="fill" />-->
 
             <TextView
-                android:id="@+id/textViewOldPrice1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:id="@+id/tvResultClientCost"
+                android:layout_marginBottom="5dp"
                 android:gravity="center"
-                android:textColor="@color/colorGray"
-                android:textSize="@dimen/sizeTextPrice" />
-        </LinearLayout>
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_column="1"
+                app:layout_gravity="fill" />
+
+
+            <TextView
+                android:gravity="center_vertical"
+                android:text="@string/text_commission_uber"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:id="@+id/tvResultCommissionUber"
+                android:gravity="center"
+                android:textSize="@dimen/sizeTextPrice"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:id="@+id/tvDescGarantPeakSurcharge"
+                android:gravity="center_vertical"
+                android:text="@string/desc_garantpik_surcharge"
+                android:visibility="gone"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:id="@+id/tvResultGarantPeakSurcharge"
+                android:gravity="center"
+                android:textSize="@dimen/sizeTextPrice"
+                android:visibility="gone"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:gravity="center_vertical"
+                android:text="@string/text_commission_partner"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:id="@+id/tvResultCommissionPartner"
+                android:gravity="center"
+                android:textSize="@dimen/sizeTextPrice"
+                app:layout_gravity="fill" />
+
+            <!--черта-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:gravity="center"
+                app:layout_columnSpan="2"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:gravity="center_vertical"
+                android:text="@string/desc_price"
+                app:layout_gravity="fill" />
+
+            <TextView
+                android:id="@+id/tvResultProfit"
+                android:gravity="center"
+                android:textSize="18sp"
+                app:layout_gravity="fill" />
+        </android.support.v7.widget.GridLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -164,7 +248,6 @@
                     android:id="@+id/editTextTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:cursorVisible="false"
                     android:ellipsize="end"
                     android:focusableInTouchMode="true"
@@ -203,17 +286,12 @@
                 android:id="@+id/boostSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="1.1"
                 android:entries="@array/boost" />
 
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -235,26 +313,6 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/buttonClearEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="@string/clearBtn"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/buttonCalc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/calculate" />
-        </LinearLayout>
 
         <ListView
             android:layout_width="match_parent"

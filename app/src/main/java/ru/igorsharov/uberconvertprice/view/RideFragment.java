@@ -1,4 +1,4 @@
-package ru.igorsharov.uberconvertprice.fragments;
+package ru.igorsharov.uberconvertprice.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -6,16 +6,15 @@
 
     <string name="action_settings">Настройки</string>
 
-    <string name="time">Время</string>
-    <string name="timeWait">Ожидание</string>
-    <string name="way">Расстояние</string>
+    <string name="time">Минуты</string>
+    <string name="way">Километры</string>
     <string name="calculate">Посчитать</string>
     <string name="descPrice">Стоимость поездок по тарифам:</string>
-    <string name="descNewPrice">3/12</string>
+    <string name="descTvPrice">3/12</string>
     <string name="descOldPrice">7/7</string>
     <string name="clearBtn">X</string>
-    <string name="desc_total_price">общая стоимость</string>
-    <string name="desc_price">доход от поездки</string>
+    <string name="desc_total_price">Стоимость поездки</string>
+    <string name="desc_price">Доход</string>
 
     <string-array name="boost">
         <item>1.0</item>
@@ -55,5 +54,10 @@
     <string name="snackbar_msg_add_to_llist">Добавлено в список поездок</string>
     <string name="snackbar_msg_calculate">Посчитано</string>
     <string name="snackbar_msg_cls">Очищено</string>
-    <string name="rub_name">руб.</string>
+    <string name="rub_name">₽</string>
+    <string name="text_commission_uber">Комиссия Uber</string>
+    <string name="column_name_tariff">Тариф</string>
+    <string name="text_commission_partner">Комиссия партнера</string>
+    <string name="desc_garantpik_surcharge">гарантированный пик</string>
+    <string name="descHighPrice">повышенный спрос</string>
 </resources>

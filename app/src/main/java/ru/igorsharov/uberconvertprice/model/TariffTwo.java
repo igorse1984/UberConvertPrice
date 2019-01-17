@@ -1,12 +1,10 @@
-package ru.igorsharov.uberconvertprice.calculate;
-
-import ru.igorsharov.uberconvertprice.presenters.StateBox;
+package ru.igorsharov.uberconvertprice.model;
 
 /**
  * Created by IgorSE on 13.02.2018.
  */
 
-public class TariffTwo extends Calculator {
+public class TariffTwo extends UberCalculator {
 
     public TariffTwo(StateBox stateBox) {
         super(stateBox);
@@ -21,8 +19,8 @@ public class TariffTwo extends Calculator {
 
     // дополняем метод
     @Override
-    protected void getData() {
-        super.getData();
+    protected void getDataOfStateBox() {
+        super.getDataOfStateBox();
         // задаем переменной значение чекбокса т.к. в тарифе используется подсчет с превышением
         over = stateBox.getChBoxOverState();
     }

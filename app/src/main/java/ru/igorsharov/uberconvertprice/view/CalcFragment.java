@@ -1,11 +1,11 @@
-package ru.igorsharov.uberconvertprice.fragments;
+package ru.igorsharov.uberconvertprice.view;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,16 +17,20 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import ru.igorsharov.uberconvertprice.CalcFragmentInterface;
 import ru.igorsharov.uberconvertprice.CustomEditText;
 import ru.igorsharov.uberconvertprice.R;
 import ru.igorsharov.uberconvertprice.presenters.CalcPresenter;
@@ -35,23 +39,43 @@ import ru.igorsharov.uberconvertprice.presenters.CalcPresenter;
  * Created by Игорь on 07.03.2018.
  */
 
-public class CalcFragment extends Fragment implements CalcFragmentInterface {
+public class CalcFragment extends MvpAppCompatFragment implements CalcFragmentInterface {
 
-    private TextView tvResultOfNewPrice, tvResultOfOldPrice;
-    private TextView tvResultOfNewPrice1, tvResultOfOldPrice1;
+    final int DESC_HIGH_PRICE = R.id.tvDescHighPrice;
+
+    @BindViews({
+            DESC_HIGH_PRICE,
+            R.id.tvDescGarantPeakSurcharge,
+            R.id.tvDescLineClientCost,
+    })
+    List<TextView> tvDescsList;
+
+    @BindViews({
+            R.id.tvResultCost,
+            R.id.tvResultHighPrice,
+            R.id.tvResultClientCost,
+            R.id.tvResultCommissionUber,
+            R.id.tvResultGarantPeakSurcharge,
+            R.id.tvResultCommissionPartner,
+            R.id.tvResultProfit})
+    List<TextView> tvResultsList;
+
+
     private Spinner boostSpinner;
-    private CheckBox chBoxOblast, chBoxGarantpik;
+    private CheckBox chBoxRegion, chBoxWarrantyPeak;
     private Switch switchShowPrice;
-    private LinearLayout oldPrice;
-    private CustomEditText etParthnerCommission, etTime, etWay;
+    private CustomEditText etPartnerCommission, etTime, etDistance;
     final String TAG = "@@@" + getClass().getName();
     private static final String BUNDLE_CONTENT = "bundle_content";
-    private CalcPresenter calcPresenter;
+
+    @InjectPresenter
+    CalcPresenter calcPresenter;
     private View view;
 
     private Unbinder unbinder;
     @BindView(R.id.buttonClearEditText)
     Button btnCls;
+
 
     public static CalcFragment newInstance(final String content) {
         final CalcFragment fragment = new CalcFragment();
@@ -67,14 +91,12 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // заготовка инициализации аргументов фрагмента, пока не используется
         if (getArguments() != null && getArguments().containsKey(BUNDLE_CONTENT)) {
             content = getArguments().getString(BUNDLE_CONTENT);
         } else {
             throw new IllegalArgumentException("Must be created through newInstance(...)");
         }
-        calcPresenter = new CalcPresenter(this);
     }
 
     @Override
@@ -116,8 +138,10 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.calculator, container, false);
+        view = inflater.inflate(R.layout.fragment_calculator, container, false);
 
+        // для фрагментов необходимо инстанцировать унбиндер,
+        // чтобы увязать его с жизненным циклом фрагмента
         unbinder = ButterKnife.bind(this, view);
 
         initView();
@@ -130,43 +154,53 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
         return view;
     }
 
+    public void getRideData() {
+        calcPresenter.setRideDataOfView(
+                getFloatOfView(etDistance),
+                getFloatOfView(etTime),
+                getFloatOfView(boostSpinner),
+                getFloatOfView(etPartnerCommission));
+
+//        return "";
+    }
+
+    public void getChBoxWarrantyPeakState() {
+        calcPresenter.setChBoxWarrantyPeakState(
+                chBoxWarrantyPeak.isChecked());
+    }
+
+    public void getChBoxRegionState() {
+        calcPresenter.setChBoxRegionState(
+                chBoxRegion.isChecked());
+    }
 
     // выполнение расчета по нажатию кнопки
     @OnClick(R.id.buttonCalc)
     public void onClickButtonCalc() {
 
-        // сбор данных из View и передача их в презентер
-        calcPresenter.getStateBox().setData(
-                getFloatOfView(etWay),
-                getFloatOfView(etTime),
-                getFloatOfView(boostSpinner),
-                getFloatOfView(etParthnerCommission));
-
         calcPresenter.buttonClick(calcPresenter.BUTTON_CALC);
+
+        //TODO Должен решать презентер вывод сообщений
         calcPresenter.printSnackBar(getString(R.string.snackbar_msg_calculate), 0, R.color.colorGreen);
     }
 
     @OnClick(R.id.buttonClearEditText)
     public void onClickButtonCls() {
         calcPresenter.buttonClick(calcPresenter.BUTTON_CLC);
+        //TODO так же как с посчитано, в презентер
         calcPresenter.printSnackBar(getString(R.string.snackbar_msg_cls), 0, R.color.colorAccent);
     }
 
     private void initView() {
-        oldPrice = view.findViewById(R.id.oldPrice);
         etTime = view.findViewById(R.id.editTextTime);
-        etWay = view.findViewById(R.id.editTextWay);
-        tvResultOfNewPrice = view.findViewById(R.id.textViewNewPrice);
-        tvResultOfOldPrice = view.findViewById(R.id.textViewOldPrice);
-        tvResultOfNewPrice1 = view.findViewById(R.id.textViewNewPrice1);
-        tvResultOfOldPrice1 = view.findViewById(R.id.textViewOldPrice1);
+        etDistance = view.findViewById(R.id.editTextWay);
         boostSpinner = view.findViewById(R.id.boostSpinner);
-        chBoxOblast = view.findViewById(R.id.chbPrigorod);
-        chBoxGarantpik = view.findViewById(R.id.chbGarantpik);
+        chBoxRegion = view.findViewById(R.id.chbPrigorod);
+        chBoxWarrantyPeak = view.findViewById(R.id.chbGarantpik);
         switchShowPrice = view.findViewById(R.id.switch2);
         btnCls = view.findViewById(R.id.buttonClearEditText);
 
-        etParthnerCommission = view.findViewById(R.id.editTextPrthnerCommisson);
+        etPartnerCommission = view.findViewById(R.id.editTextPrthnerCommisson);
         // фокус на поле "время" при загрузке приложения
         etTime.requestFocus();
 
@@ -186,7 +220,7 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
 
     private void setListeners() {
         // слушаем поле EditText расстояние
-        etWay.addTextChangedListener(new TextWatcher() {
+        etDistance.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -198,7 +232,7 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
             @Override
             public void afterTextChanged(Editable editable) {
                 // отслеживание превышения километража по тарифу
-                calcPresenter.changeChBoxOblastVisibility(getFloatOfView(etWay));
+                calcPresenter.changeChBoxOblastVisibility(getFloatOfView(etDistance));
 
                 // отслеживание пустотности EditText
                 checkEmptyEditText();
@@ -228,10 +262,11 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i > 0) {
-                    chBoxGarantpik.setVisibility(View.VISIBLE);
+                    chBoxWarrantyPeak.setVisibility(View.VISIBLE);
+
                 } else {
-                    chBoxGarantpik.setChecked(false);
-                    chBoxGarantpik.setVisibility(View.GONE);
+                    chBoxWarrantyPeak.setChecked(false);
+                    chBoxWarrantyPeak.setVisibility(View.GONE);
                 }
             }
 
@@ -240,34 +275,18 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
             }
         });
 
-        // слушаем чекбоксы
-        chBoxOblast.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                calcPresenter.getStateBox().setChBoxOblastState(b);
-            }
-        });
-
-        chBoxGarantpik.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                calcPresenter.getStateBox().setChBoxGarantpikState(b);
-            }
-        });
-
-        // переключатель видимости старого тарифа
+        // слушаем switch
         switchShowPrice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                // TODO убрать доп поля, нужно менять отображение в пределах одного поля
-                oldPrice.setVisibility(b ? View.VISIBLE : View.GONE);
+
             }
         });
 
     }
 
     private void checkEmptyEditText() {
-        calcPresenter.checkEmptyView(String.valueOf(etWay.getText()), String.valueOf(etTime.getText()));
+        calcPresenter.checkEmptyView(String.valueOf(etDistance.getText()), String.valueOf(etTime.getText()));
     }
 
     // универсальный метод получения данных из полей ввода
@@ -284,42 +303,43 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
         return 0;
     }
 
+
+    private void setDataInView(TextView tv, String data) {
+        tv.setText(data.concat(" ").concat(getString(R.string.rub_name)));
+    }
+
+    private void setVisibilityView(TextView tv, boolean visible) {
+        tv.setVisibility(visibility(visible));
+    }
+
+
     // отображение результатов рассчета
     @Override
-    public void setResults(float costOne, float profitOne, float costTwo, float profitTwo) {
-        setResult(tvResultOfNewPrice, costTwo);
-        setResult(tvResultOfNewPrice1, profitTwo);
-        setResult(tvResultOfOldPrice, costOne);
-        setResult(tvResultOfOldPrice1, profitOne);
+    public void displayResults(final String[] calculationData) {
+        ButterKnife.Action setData = new ButterKnife.Action<TextView>() {
+            @Override
+            public void apply(@NonNull TextView tv, int index) {
+                setDataInView(tv, calculationData[index]);
+//                setVisibilityView(tv, visibilityData[index]);
+            }
+        };
+        ButterKnife.apply(tvResultsList, setData);
     }
 
-
-    private void setResult(TextView tv, float priceTotal) {
-        tv.setText(String.valueOf((int) priceTotal).concat(getString(R.string.rub_name)));
-    }
-
-    // отображение чекбокса увеличения цены превышенного километража по тарифу
-    @Override
-    public void setVisibilityChBoxOblast(boolean visibility) {
-        if (visibility) {
-            chBoxOblast.setVisibility(View.VISIBLE);
-        } else {
-            chBoxOblast.setChecked(false);
-            chBoxOblast.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     public void clsView() {
         // очистка полей ввода
         clearViewText(etTime);
-        clearViewText(etWay);
-        clearViewText(tvResultOfOldPrice);
-        clearViewText(tvResultOfNewPrice);
-        clearViewText(tvResultOfOldPrice1);
-        clearViewText(tvResultOfNewPrice1);
+        clearViewText(etDistance);
+
         etTime.requestFocus();
         boostSpinner.setSelection(0);
+
+        // очистка всех TextView участвующих в отображении данных калькуляции
+        for (TextView tv : tvResultsList) {
+            clearViewText(tv);
+        }
     }
 
     private void clearViewText(TextView view) {
@@ -340,19 +360,50 @@ public class CalcFragment extends Fragment implements CalcFragmentInterface {
         snackbar.show();
     }
 
-    @Override
-    public void setVisibilityBtnCls(boolean flag) {
-        if (flag) {
-            btnCls.setVisibility(View.GONE);
-        } else {
-            btnCls.setVisibility(View.VISIBLE);
-        }
-    }
 
     @Override
     public void setDefaultPartnerCommission(String partnerCommission) {
-        etParthnerCommission.setText(partnerCommission);
+        etPartnerCommission.setText(partnerCommission);
     }
 
+    @Override
+    public void setTextInTextView(int tvName, String str) {
+        tvDescsList.get(tvName).setText(str);
+    }
+
+    /**
+     * Установка различных visibility
+     */
+
+    // отображение чекбокса увеличения цены превышенного километража по тарифу
+    @Override
+    public void setVisibilityChBoxOblast(boolean visibility) {
+        if (visibility) {
+            chBoxRegion.setVisibility(View.VISIBLE);
+        } else {
+            chBoxRegion.setChecked(false);
+            chBoxRegion.setVisibility(View.GONE);
+        }
+    }
+
+
+    private int visibility(boolean flag) {
+        return flag ? View.VISIBLE : View.GONE;
+    }
+
+
+    public void setVisibilityResult(int indexResultTv, boolean flag) {
+        tvResultsList.get(indexResultTv).setVisibility(visibility(flag));
+    }
+
+    public void setVisibilityDesc(int indexDescTv, boolean flag) {
+        tvDescsList.get(indexDescTv).setVisibility(visibility(flag));
+    }
+
+
+    @Override
+    public void setVisibilityBtnCls(boolean flag) {
+        btnCls.setVisibility(visibility(!flag));
+    }
 
 }
